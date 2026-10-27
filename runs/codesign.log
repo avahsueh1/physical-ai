@@ -1,0 +1,25 @@
+  default body (4 cells, H 1.0, phi 50): score 1.376 success 88%
+  cells 2 gen 1/2: best {'cells': 2, 'H': 0.891, 'phi': 40.4} score 1.532 success 100%   18s
+  cells 2 gen 2/2: best {'cells': 2, 'H': 0.941, 'phi': 40.1} score 1.532 success 100%   40s
+  cells 3 gen 1/2: best {'cells': 3, 'H': 0.87, 'phi': 31.9} score 1.527 success 100%   59s
+  cells 3 gen 2/2: best {'cells': 3, 'H': 0.904, 'phi': 35.4} score 1.528 success 100%   77s
+  cells 4 gen 1/2: best {'cells': 4, 'H': 1.063, 'phi': 29.4} score 1.530 success 100%   96s
+  cells 4 gen 2/2: best {'cells': 4, 'H': 1.063, 'phi': 29.4} score 1.530 success 100%   114s
+  cells 5 gen 1/2: best {'cells': 5, 'H': 0.934, 'phi': 30.5} score 1.518 success 100%   136s
+  cells 5 gen 2/2: best {'cells': 5, 'H': 1.002, 'phi': 31.0} score 1.518 success 100%   159s
+  cells 6 gen 1/2: best {'cells': 6, 'H': 0.765, 'phi': 27.7} score 1.515 success 100%   185s
+  cells 6 gen 2/2: best {'cells': 6, 'H': 0.765, 'phi': 27.7} score 1.515 success 100%   212s
+
+rank  cells     H    phi   score  success  progress   failures
+   1      2   0.94   40.1   1.532    100%       97%   -
+   2      2   0.89   40.4   1.532    100%       97%   -
+   3      4   1.06   29.4   1.530    100%       97%   -
+   4      2   0.93   41.3   1.530    100%       97%   -
+   5      3   0.90   35.4   1.528    100%       97%   -
+   6      3   0.87   31.9   1.527    100%       97%   -
+   7      3   0.94   40.8   1.524    100%       97%   -
+   8      3   0.87   36.3   1.523    100%       97%   -
+   9      4   1.07   46.1   1.523    100%       97%   -
+  10      4   0.78   43.5   1.523    100%       97%   -
+
+default body ranks 40 of 61; wrote runs/codesign_medium.json

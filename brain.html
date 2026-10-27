@@ -1,0 +1,381 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Crawler Brain Lab</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Archivo+Narrow:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a lab bench. The 3D viewport is the specimen on the left; the brain's readouts are an
+   instrument panel on the right (stacked below it on phones). */
+:root {
+  --bg: #eceef2; --panel: #ffffff; --ink: #1a2130; --muted: #5b6475; --line: #d3d8e0;
+  --accent: #2c58c4; --accent-soft: #dfe7fa; --warn: #b96d00; --warn-soft: #fbecd2;
+  --bad: #be3a31; --good: #2d8a4d; --scene: #e4e7ec; --ground: #cfd4dc; --paper: #fbfaf6;
+  --display: "Archivo Narrow", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --body: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f1218; --panel: #171b23; --ink: #e5e8ee; --muted: #98a1b1; --line: #2a303c;
+  --accent: #7d9fff; --accent-soft: #1f2a46; --warn: #f0a443; --warn-soft: #3a2a12;
+  --bad: #ff6d62; --good: #5bc77e; --scene: #151a22; --ground: #2a313d; --paper: #dcd9cf; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0f1218; --panel: #171b23; --ink: #e5e8ee; --muted: #98a1b1; --line: #2a303c;
+  --accent: #7d9fff; --accent-soft: #1f2a46; --warn: #f0a443; --warn-soft: #3a2a12;
+  --bad: #ff6d62; --good: #5bc77e; --scene: #151a22; --ground: #2a313d; --paper: #dcd9cf; color-scheme: dark }
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.45 var(--body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 14px; }
+header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; margin-bottom: 12px; }
+h1 { font: 700 26px/1.1 var(--display); letter-spacing: .01em; margin: 0; text-wrap: balance; }
+header p { margin: 0; color: var(--muted); max-width: 70ch; }
+.bench { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 14px; align-items: start; }
+@media (max-width: 900px) { .bench { grid-template-columns: minmax(0, 1fr); } }
+
+.stage { position: relative; background: var(--scene); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; height: min(72vh, 640px); min-height: 320px; }
+@media (max-width: 900px) { .stage { height: min(52vh, 440px); } }
+#view { display: block; width: 100%; height: 100%; touch-action: none; cursor: grab; }
+.hud { position: absolute; left: 12px; top: 10px; right: 12px; display: flex; flex-wrap: wrap; gap: 6px; pointer-events: none; }
+.chip { font: 500 12px/1 var(--mono); padding: 6px 8px; border-radius: 4px; background: var(--panel); border: 1px solid var(--line); color: var(--ink); }
+.chip.good { color: var(--good); border-color: var(--good); }
+.chip.bad { color: var(--bad); border-color: var(--bad); }
+.chip.warn { color: var(--warn); border-color: var(--warn); background: var(--warn-soft); }
+.hint { position: absolute; right: 12px; bottom: 10px; color: var(--muted); font-size: 12px; pointer-events: none; }
+.progress { position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: var(--line); }
+.progress i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .2s; }
+
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; display: flex; flex-direction: column; }
+.sec { padding: 12px 14px; border-top: 1px solid var(--line); display: grid; gap: 8px; min-width: 0; }
+.sec:first-child { border-top: 0; }
+.label { font: 600 11px/1 var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+select, input[type=text] { font: 14px var(--body); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 7px 8px; width: 100%; min-width: 0; }
+input[type=text]:focus, select:focus, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+button { font: 600 13px var(--body); border-radius: 4px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); padding: 7px 12px; cursor: pointer; }
+button.primary { background: var(--accent); border-color: var(--accent); color: var(--panel); }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+.seg button { border: 0; border-radius: 0; background: transparent; font-weight: 500; }
+.seg button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.toggle { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
+.toggle input { accent-color: var(--accent); width: 16px; height: 16px; }
+.mission { font: 12px/1.5 var(--mono); color: var(--muted); }
+.mission b { color: var(--ink); font-weight: 500; }
+.examples { display: flex; flex-wrap: wrap; gap: 4px; }
+.examples button { font: 12px var(--mono); padding: 3px 6px; background: transparent; color: var(--muted); }
+
+.bars { display: grid; grid-template-columns: 92px minmax(0, 1fr) 40px; gap: 3px 8px; align-items: center; font: 12px var(--mono); font-variant-numeric: tabular-nums; }
+.bars .n { color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bars .n.on { color: var(--ink); font-weight: 500; }
+.bars .v { text-align: right; color: var(--muted); }
+.track { position: relative; height: 10px; background: var(--bg); border-radius: 2px; }
+.track i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 2px; background: var(--muted); opacity: .45; }
+.track i.chosen { background: var(--accent); opacity: 1; }
+.track i.vetoed { background: var(--warn); opacity: 1; }
+.track .budget { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ink); opacity: .6; }
+.note { font: 12px/1.4 var(--mono); color: var(--muted); min-height: 1.4em; }
+.log { font: 12px/1.5 var(--mono); color: var(--muted); max-height: 9.5em; overflow-y: auto; margin: 0; padding: 0; list-style: none; }
+.log li.warn { color: var(--warn); }
+.log li.end { color: var(--ink); font-weight: 500; }
+footer { margin-top: 12px; color: var(--muted); font-size: 12px; max-width: 90ch; }
+footer code { font-family: var(--mono); }
+@media (prefers-reduced-motion: reduce) { .progress i { transition: none; } }
+</style>
+
+<header>
+  <h1>Crawler Brain Lab</h1>
+  <p>A Kresling origami crawler driven live by a tiny trained controller. Before each 1.5&nbsp;s move, a learned world model asks whether the robot could still recover afterwards, and vetoes any move that would leave it stuck in a state it can't get out of.</p>
+</header>
+
+<div class="bench">
+  <div class="stage">
+    <canvas id="view" aria-label="3D view of the crawler on the course"></canvas>
+    <div class="hud" id="hud"></div>
+    <div class="hint">drag to orbit · scroll to zoom</div>
+    <div class="progress"><i id="prog"></i></div>
+  </div>
+
+  <div class="panel">
+    <div class="sec">
+      <span class="label">Course</span>
+      <select id="course" aria-label="Course"></select>
+    </div>
+    <div class="sec">
+      <label class="label" for="say">Instruction</label>
+      <input type="text" id="say" value="go forward" autocomplete="off" spellcheck="false">
+      <div class="examples" id="examples"></div>
+      <div class="mission" id="mission"></div>
+    </div>
+    <div class="sec">
+      <span class="label">Driver</span>
+      <div class="row">
+        <div class="seg" role="group" aria-label="Driver">
+          <button type="button" id="drvBrain" aria-pressed="true">Tiny brain</button>
+          <button type="button" id="drvReckless" aria-pressed="false">Reckless</button>
+        </div>
+        <label class="toggle"><input type="checkbox" id="filter" checked> Safety filter</label>
+      </div>
+      <div class="row">
+        <button type="button" class="primary" id="run">Run</button>
+        <button type="button" id="step">One move</button>
+        <button type="button" id="restart">Restart</button>
+        <select id="speed" aria-label="Speed" style="width:auto">
+          <option value="1">1× real time</option><option value="4" selected>4×</option><option value="12">12×</option>
+        </select>
+      </div>
+    </div>
+    <div class="sec">
+      <span class="label">Gait choice (once per 4 moves)</span>
+      <div class="bars" id="gaits"></div>
+    </div>
+    <div class="sec">
+      <span class="label">Risk of each move: can I still recover?</span>
+      <div class="bars" id="risks"></div>
+      <div class="note" id="note">Press Run. The black tick is the risk budget.</div>
+    </div>
+    <div class="sec">
+      <span class="label">Log</span>
+      <ul class="log" id="log"></ul>
+    </div>
+  </div>
+</div>
+
+<footer id="foot"></footer>
+
+<script src="web/vendor/three.min.js"></script>
+<script src="web/core.js"></script>
+<script src="web/motion.js"></script>
+<script src="web/terrain.js"></script>
+<script src="web/brain-web.js"></script>
+<script src="web/brain-model.js"></script>
+<script>
+(function () {
+  'use strict';
+  const CL = window.CreaseLab, M = window.BRAIN_MODEL;
+  const $ = (id) => document.getElementById(id);
+  const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+  if (!M) { $('note').textContent = 'No trained brain found: run scripts/export_web.py first.'; return; }
+
+  // ------------------------------------------------------------------ UI setup
+  const fams = {};
+  M.courses.forEach((c, i) => { (fams[c.family] = fams[c.family] || []).push([i, c]); });
+  const sel = $('course');
+  for (const [fam, list] of Object.entries(fams)) {
+    const g = document.createElement('optgroup'); g.label = fam;
+    for (const [i, c] of list) { const o = document.createElement('option'); o.value = i; o.textContent = c.label; g.appendChild(o); }
+    sel.appendChild(g);
+  }
+  const EX = ['go forward', 'crawl 3 body lengths carefully', 'hurry, squeeze through anyway', 'stop'];
+  EX.forEach((t) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = t; b.onclick = () => { $('say').value = t; restart(); }; $('examples').appendChild(b); });
+  $('foot').innerHTML = `Model: <code>${M.source}</code>. Controller: ${M.policy_params} parameters. Risk model: ${M.risk.length}-member ensemble. ` +
+    `Courses are held-out seeds the brain never trained on. Physics: the same Crease Lab bar-and-hinge simulation as the main app (<code>web/terrain.js</code>).`;
+
+  let driver = 'brain';
+  $('drvBrain').onclick = () => { driver = 'brain'; $('drvBrain').setAttribute('aria-pressed', 'true'); $('drvReckless').setAttribute('aria-pressed', 'false'); restart(); };
+  $('drvReckless').onclick = () => { driver = 'reckless'; $('drvReckless').setAttribute('aria-pressed', 'true'); $('drvBrain').setAttribute('aria-pressed', 'false'); restart(); };
+  $('filter').onchange = restart; sel.onchange = restart;
+  $('say').onkeydown = (e) => { if (e.key === 'Enter') restart(); };
+  $('say').oninput = showMission;
+
+  // ------------------------------------------------------------------ three.js scene
+  const canvas = $('view');
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(40, 1, 0.05, 200);
+  camera.up.set(0, 0, 1);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x8890a0, 0.85));
+  const sun = new THREE.DirectionalLight(0xffffff, 0.6); sun.position.set(-4, -6, 10); scene.add(sun);
+  let world = new THREE.Group(); scene.add(world);
+  let robotLines, robotFaces, sim = null, ep = null;
+
+  function colors() {
+    return { scene: new THREE.Color(css('--scene')), ground: new THREE.Color(css('--ground')), paper: new THREE.Color(css('--paper')),
+      ink: new THREE.Color(css('--ink')), accent: new THREE.Color(css('--accent')), muted: new THREE.Color(css('--muted')) };
+  }
+
+  function groundZ(segs, x) {
+    if (!segs.length) return 0;
+    for (const g of segs) if (x >= g.x0 && x <= g.x1) return g.z0 + (g.z1 - g.z0) * (x - g.x0) / Math.max(1e-9, g.x1 - g.x0);
+    return x < segs[0].x0 ? segs[0].z0 : segs[segs.length - 1].z1;
+  }
+
+  function buildWorld(course) {
+    scene.remove(world); world = new THREE.Group(); scene.add(world);
+    const C = colors(); scene.background = C.scene;
+    const segs = (course.terrain.ground && course.terrain.ground.segments) || [];
+    const xs = course.waypoints.map((p) => p[0]), x0 = Math.min(...xs) - 12, x1 = Math.max(...xs) + 12;
+    const ys = course.waypoints.map((p) => p[1]), y0 = Math.min(...ys) - 8, y1 = Math.max(...ys) + 8;
+    // ground: a strip sampled along x (ramps), flat across y
+    const nx = 160, pos = [], idx = [];
+    for (let i = 0; i <= nx; i++) { const x = x0 + (x1 - x0) * i / nx, z = groundZ(segs, x); pos.push(x, y0, z, x, y1, z); }
+    for (let i = 0; i < nx; i++) { const a = 2 * i; idx.push(a, a + 2, a + 1, a + 1, a + 2, a + 3); }
+    const gg = new THREE.BufferGeometry(); gg.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); gg.setIndex(idx); gg.computeVertexNormals();
+    world.add(new THREE.Mesh(gg, new THREE.MeshLambertMaterial({ color: C.ground })));
+    // grid lines every 1 unit for scale
+    const gl = [];
+    for (let x = Math.ceil(x0); x <= x1; x++) { const z = groundZ(segs, x) + 0.004; gl.push(x, y0, z, x, y1, z); }
+    const glg = new THREE.BufferGeometry(); glg.setAttribute('position', new THREE.Float32BufferAttribute(gl, 3));
+    world.add(new THREE.LineSegments(glg, new THREE.LineBasicMaterial({ color: C.muted, transparent: true, opacity: 0.18 })));
+    // patches (ice / wet)
+    for (const p of course.terrain.patches || []) {
+      const n = 24, pp = [], ii = [];
+      const ya = Math.max(p.y0, y0), yb = Math.min(p.y1, y1);
+      for (let i = 0; i <= n; i++) { const x = p.x0 + (p.x1 - p.x0) * i / n, z = groundZ(segs, x) + 0.01; pp.push(x, ya, z, x, yb, z); }
+      for (let i = 0; i < n; i++) { const a = 2 * i; ii.push(a, a + 2, a + 1, a + 1, a + 2, a + 3); }
+      const pg = new THREE.BufferGeometry(); pg.setAttribute('position', new THREE.Float32BufferAttribute(pp, 3)); pg.setIndex(ii);
+      world.add(new THREE.Mesh(pg, new THREE.MeshBasicMaterial({ color: p.kind === 'ice' ? 0x8ccaf0 : 0x6fbfac, transparent: true, opacity: 0.45, side: THREE.DoubleSide })));
+    }
+    // boxes: walls, rocks, ceilings
+    for (const b of course.terrain.boxes || []) {
+      const geo = new THREE.BoxGeometry(2 * b.hx, 2 * b.hy, 2 * b.hz);
+      const col = b.kind === 'rock' ? 0x9b7b58 : b.kind === 'ceiling' ? 0xd99a45 : 0x8b919c;
+      const mat = new THREE.MeshLambertMaterial({ color: col, transparent: b.kind !== 'rock', opacity: b.kind === 'wall' ? 0.2 : b.kind === 'ceiling' ? 0.7 : 1, depthWrite: b.kind === 'rock' });
+      const m = new THREE.Mesh(geo, mat); m.position.set(b.cx, b.cy, b.cz); m.rotation.z = b.yaw || 0; world.add(m);
+    }
+    // path + goal
+    const wp = []; course.waypoints.forEach((p) => wp.push(p[0], p[1], groundZ(segs, p[0]) + 0.02));
+    const wg = new THREE.BufferGeometry(); wg.setAttribute('position', new THREE.Float32BufferAttribute(wp, 3));
+    world.add(new THREE.Line(wg, new THREE.LineDashedMaterial({ color: C.accent, dashSize: 0.3, gapSize: 0.25 })).computeLineDistances());
+    const end = course.waypoints[course.waypoints.length - 1];
+    const goal = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.25, 0.04, 24), new THREE.MeshBasicMaterial({ color: C.accent }));
+    goal.rotation.x = Math.PI / 2; goal.position.set(end[0], end[1], groundZ(segs, end[0]) + 0.03); world.add(goal);
+  }
+
+  function buildRobot() {
+    const C = colors();
+    const bars = sim.bars, faces = sim.mesh.faces;
+    const lg = new THREE.BufferGeometry(); lg.setAttribute('position', new THREE.BufferAttribute(new Float32Array(bars.length * 6), 3));
+    robotLines = new THREE.LineSegments(lg, new THREE.LineBasicMaterial({ color: C.ink }));
+    const fg = new THREE.BufferGeometry(); fg.setAttribute('position', new THREE.BufferAttribute(new Float32Array(sim.N * 3), 3));
+    fg.setIndex(faces.flat());
+    robotFaces = new THREE.Mesh(fg, new THREE.MeshLambertMaterial({ color: C.paper, side: THREE.DoubleSide, transparent: true, opacity: 0.9 }));
+    robotFaces.renderOrder = 1; robotLines.renderOrder = 2;
+    world.add(robotFaces); world.add(robotLines);
+  }
+
+  function updateRobot() {
+    const x = sim.x, lp = robotLines.geometry.attributes.position.array;
+    sim.bars.forEach((b, k) => { for (let d = 0; d < 3; d++) { lp[6 * k + d] = x[3 * b.i + d]; lp[6 * k + 3 + d] = x[3 * b.j + d]; } });
+    robotLines.geometry.attributes.position.needsUpdate = true;
+    robotFaces.geometry.attributes.position.array.set(x);
+    robotFaces.geometry.attributes.position.needsUpdate = true;
+    robotFaces.geometry.computeVertexNormals();
+  }
+
+  // ------------------------------------------------------------------ camera: chase + orbit
+  const cam = { az: -2.6, el: 0.62, dist: 10, target: new THREE.Vector3() };
+  let drag = null;
+  canvas.addEventListener('pointerdown', (e) => { drag = [e.clientX, e.clientY]; canvas.setPointerCapture(e.pointerId); canvas.style.cursor = 'grabbing'; });
+  canvas.addEventListener('pointermove', (e) => { if (!drag) return; cam.az -= (e.clientX - drag[0]) * 0.008; cam.el = Math.max(0.05, Math.min(1.45, cam.el + (e.clientY - drag[1]) * 0.006)); drag = [e.clientX, e.clientY]; });
+  canvas.addEventListener('pointerup', () => { drag = null; canvas.style.cursor = 'grab'; });
+  canvas.addEventListener('wheel', (e) => { e.preventDefault(); cam.dist = Math.max(4, Math.min(40, cam.dist * Math.exp(e.deltaY * 0.001))); }, { passive: false });
+  function placeCamera(snap) {
+    const c = sim.com(), t = new THREE.Vector3(c[0] + 1.2, c[1], c[2] + 0.4);
+    cam.target.lerp(t, snap ? 1 : 0.08);
+    const d = cam.dist / Math.min(1, Math.pow(camera.aspect, 0.7));   // narrow screens: step back
+    camera.position.set(cam.target.x + d * Math.cos(cam.el) * Math.cos(cam.az), cam.target.y + d * Math.cos(cam.el) * Math.sin(cam.az), cam.target.z + d * Math.sin(cam.el));
+    camera.lookAt(cam.target);
+  }
+  function resize() {
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    renderer.setSize(w, h, false); camera.aspect = w / Math.max(1, h); camera.updateProjectionMatrix();
+  }
+  new ResizeObserver(resize).observe(canvas);
+
+  // ------------------------------------------------------------------ readouts
+  const NAMES = M.actions.map((a) => a.name);
+  function barsHTML(rows) {
+    return rows.map((r) => `<span class="n${r.on ? ' on' : ''}">${r.name}</span><span class="track">${r.budget != null ? `<span class="budget" style="left:calc(${(r.budget * 100).toFixed(1)}% - 1px)"></span>` : ''}<i class="${r.cls || ''}" style="width:${(Math.min(1, Math.max(0, r.v)) * 100).toFixed(1)}%"></i></span><span class="v">${r.v == null ? '' : r.v.toFixed(2)}</span>`).join('');
+  }
+  function showBrain() {
+    const L = ep && ep.last;
+    const gp = L && L.gaitProbs;
+    $('gaits').innerHTML = barsHTML(M.gaits.map((g, i) => ({ name: g, v: gp ? gp[i] : (L && L.gait === g ? 1 : 0), on: L && L.gait === g, cls: L && L.gait === g ? 'chosen' : '' })));
+    if (!L || !L.risk) {
+      $('risks').innerHTML = barsHTML(NAMES.map((n, i) => ({ name: n, v: 0, on: L && L.action === i, cls: L && L.action === i ? 'chosen' : '' })));
+    } else {
+      const budget = Math.max(ep.mission.tau, Math.min(...L.risk) + M.margin);
+      $('risks').innerHTML = barsHTML(NAMES.map((n, i) => ({ name: n, v: L.risk[i], budget, on: i === L.action || i === L.proposed,
+        cls: i === L.action ? 'chosen' : (i === L.proposed ? 'vetoed' : '') })));
+    }
+    $('note').textContent = !L ? 'Press Run. The black tick is the risk budget.' :
+      (L.note ? L.note : `doing ${NAMES[L.action]}` + (L.risk ? `, risk ${L.risk[L.action].toFixed(2)}` : ' (no safety filter)'));
+  }
+  function showMission() {
+    const m = CL.parseMission($('say').value);
+    $('mission').innerHTML = `goal <b>${m.goal}${m.distance ? ' ' + m.distance + ' body lengths' : ''}</b> · risk <b>${m.risk}</b> (budget ${m.tau}) · ` +
+      (m.refuse ? 'refuses unsafe moves' : '<b>filter off by request</b>');
+  }
+  function hud() {
+    const c = ep.course, chips = [];
+    chips.push(`<span class="chip">t ${(ep.t * M.decision_seconds).toFixed(0)} s · move ${ep.t}</span>`);
+    chips.push(`<span class="chip">${driver === 'brain' ? 'tiny brain' : 'reckless'}${ep.useFilter ? ' + filter' : ''}</span>`);
+    if (c.family === 'gaps') chips.push(`<span class="chip">tunnel clearance ${c.meta.clearance >= 0 ? '+' : ''}${c.meta.clearance.toFixed(2)} (${c.meta.passable ? 'fits' : 'too low'})</span>`);
+    if (ep.vetoes) chips.push(`<span class="chip warn">vetoes ${ep.vetoes}</span>`);
+    if (ep.done) chips.push(`<span class="chip ${/success/.test(ep.outcome) ? 'good' : 'bad'}">${ep.outcome}</span>`);
+    $('hud').innerHTML = chips.join('');
+    $('prog').style.width = (100 * Math.max(0, Math.min(1, ((ep.progress || 0) - ep.startProg) / Math.max(1e-6, ep.path.total - ep.startProg)))) + '%';
+  }
+  function log(text, cls) {
+    const li = document.createElement('li'); li.textContent = text; if (cls) li.className = cls;
+    $('log').prepend(li); while ($('log').children.length > 60) $('log').lastChild.remove();
+  }
+
+  // ------------------------------------------------------------------ episode control
+  let running = false, sub = 0;   // substeps done in the current move
+  function restart() {
+    running = false; $('run').textContent = 'Run';
+    const course = M.courses[+sel.value];
+    ep = new CL.BrainEpisode(M, course, { driver, filter: $('filter').checked, mission: $('say').value });
+    sim = ep.sim; sub = -1;
+    buildWorld(course); buildRobot(); updateRobot(); placeCamera(true);
+    $('log').innerHTML = ''; log(`${course.label}: "${ep.mission.text}"`);
+    showMission(); showBrain(); hud();
+  }
+  function beginMove() {
+    const a = ep.decide();
+    const L = ep.last;
+    if (ep.reflexNote) { ep.reflexNote = false; log(`${String(ep.t + 1).padStart(3)} reflex: turning isn't working, crawl instead`, 'warn'); }
+    if (L.note && /vetoed/.test(L.note)) log(`${String(ep.t + 1).padStart(3)} ${NAMES[a]} · ${L.note}`, 'warn');
+    else if (ep.phase === 1 || !L.gaitProbs) { if (ep.phase === 1) log(`${String(ep.t + 1).padStart(3)} gait: ${L.gait}`); }
+    showBrain(); sub = 0;
+  }
+  function endMove() {
+    ep.finishDecision(); sub = -1; hud();
+    if (ep.done) { running = false; $('run').textContent = 'Run'; log(`end: ${ep.outcome} after ${ep.t} moves`, 'end'); }
+  }
+  function advance(n) {
+    while (n > 0 && !ep.done) {
+      if (sub < 0) beginMove();
+      const k = Math.min(n, ep.substeps - sub);
+      sim.step(k); sub += k; n -= k;
+      if (sub >= ep.substeps) endMove();
+    }
+  }
+  $('run').onclick = () => { if (ep.done) restart(); running = !running; $('run').textContent = running ? 'Pause' : 'Run'; };
+  $('step').onclick = () => { if (ep.done) return; running = false; $('run').textContent = 'Run'; advance(ep.substeps - Math.max(0, sub)); updateRobot(); };
+  $('restart').onclick = restart;
+
+  let lastT = performance.now();
+  function frame(now) {
+    const dt = Math.min(0.1, (now - lastT) / 1000); lastT = now;
+    if (running && ep && !ep.done) { advance(Math.max(1, Math.round(dt * +$('speed').value / sim.dt))); updateRobot(); }
+    if (sim) placeCamera(false);
+    renderer.render(scene, camera);
+    requestAnimationFrame(frame);
+  }
+  // re-colour the scene when the theme changes
+  const mq = window.matchMedia('(prefers-color-scheme: dark)');
+  const recolor = () => { if (ep) { buildWorld(ep.course); buildRobot(); updateRobot(); } };
+  mq.addEventListener && mq.addEventListener('change', recolor);
+  new MutationObserver(recolor).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+  // open on the most telling example: a tunnel that is just too low
+  const firstLow = M.courses.findIndex((c) => c.family === 'gaps' && !c.meta.passable);
+  sel.value = String(Math.max(0, firstLow));
+  resize(); restart(); requestAnimationFrame(frame);
+})();
+</script>

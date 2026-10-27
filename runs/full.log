@@ -1,0 +1,36 @@
+[1/5] data: reusing runs/full/data.npz
+      55325 transitions, 10145 what-if moments, expert success while collecting 84%
+[2/5] world model: reusing
+      {"train": {"what_if_moments": 10145, "failing_moves": 0.0383, "risk_auc": 1.0, "mixed_moments": 178, "picks_a_safe_move_in_mixed": 0.972}, "validation (unseen courses)": {"what_if_moments": 1425, "failing_moves": 0.0564, "risk_auc": 0.98, "mixed_moments": 59, "picks_a_safe_move_in_mixed": 0.814}}
+      {"make progress": 0.829, "keep clear of obstacles": 0.836}
+[3/5] policy tiny: reusing
+      805 parameters, agrees with the expert's gait choice on 81% of collected cycle starts
+[3/5] policy small: reusing
+      2117 parameters, agrees with the expert's gait choice on 85% of collected cycle starts
+[3/5] policy medium: reusing
+      6277 parameters, agrees with the expert's gait choice on 92% of collected cycle starts
+[4/5] evaluate: 10 controllers x 5 families x 30 held-out seeds
+  [150/1500] eval episodes  51s
+  [300/1500] eval episodes  112s
+  [450/1500] eval episodes  164s
+  [600/1500] eval episodes  223s
+  [750/1500] eval episodes  278s
+  [900/1500] eval episodes  336s
+  [1050/1500] eval episodes  387s
+  [1200/1500] eval episodes  445s
+  [1350/1500] eval episodes  497s
+  [1500/1500] eval episodes  553s
+
+controller                       gaps  corridor    slopes    rubble     mixed       ALL   failures (all)
+expert                           100%      100%       93%       83%       90%       93%   stuck:10
+random                            57%       77%       87%       13%       50%       57%   stuck:52, wedged:13
+daredevil                         57%      100%       93%       83%       90%       85%   stuck:10, wedged:13
+safe:daredevil                    97%      100%       93%       83%       90%       93%   stuck:10, wedged:1
+policy:policy_tiny               100%      100%       93%       47%       57%       79%   stuck:31
+safe:policy:policy_tiny          100%      100%       93%       47%       57%       79%   stuck:31
+policy:policy_small              100%      100%       93%       33%       67%       79%   stuck:32
+safe:policy:policy_small         100%      100%       93%       33%       67%       79%   stuck:32
+policy:policy_medium             100%      100%       93%       53%       50%       79%   stuck:31
+safe:policy:policy_medium        100%      100%       93%       50%       50%       79%   stuck:32
+
+[5/5] wrote runs/full/results.json and runs/full/RESULTS.md

@@ -1,0 +1,769 @@
+[
+ {
+  "body": {
+   "cells": 2,
+   "H": 0.941,
+   "phi": 40.1
+  },
+  "score": 1.5323228535131295,
+  "success": 1.0,
+  "progress": 0.9685911125031936,
+  "failures": []
+ },
+ {
+  "body": {
+   "cells": 2,
+   "H": 0.891,
+   "phi": 40.4
+  },
+  "score": 1.531974555971836,
+  "success": 1.0,
+  "progress": 0.970329769458415,
+  "failures": []
+ },
+ {
+  "body": {
+   "cells": 4,
+   "H": 1.063,
+   "phi": 29.4
+  },
+  "score": 1.5303223439757792,
+  "success": 1.0,
+  "progress": 0.9700793899040385,
+  "failures": []
+ },
+ {
+  "body": {
+   "cells": 2,
+   "H": 0.928,
+   "phi": 41.3
+  },
+  "score": 1.5300950787237007,
+  "success": 1.0,
+  "progress": 0.9701137076116089,
+  "failures": []
+ },
+ {
+  "body": {
+   "cells": 3,
+   "H": 0.904,
+   "phi": 35.4
+  },
+  "score": 1.5279751036019258,
+  "success": 1.0,
+  "progress": 0.9684022103766724,
+  "failures": []
+ },
+ {
+  "body": {
+   "cells": 3,
+   "H": 0.87,
+   "phi": 31.9
+  },
+  "score": 1.5271303163502945,
+  "success": 1.0,
+  "progress": 0.9681006455865175,
+  "failures": []
+ },
+ {
+  "body": {
+   "cells": 3,
+   "H": 0.942,
+   "phi": 40.8
+  },
+  "score": 1.5238721488005968,
+  "success": 1.0,
+  "progress": 0.9693990517518359,
+  "failures": []
+ },
+ {
+  "body": {
+   "cells": 3,
+   "H": 0.872,
+   "phi": 36.3
+  },
+  "score": 1.5234389899383878,
+  "success": 1.0,
+  "progress": 0.96914094356615,
+  "failures": []
+ },
+ {
+  "body": {
+   "cells": 4,
+   "H": 1.075,
+   "phi": 46.1
+  },
+  "score": 1.5227563866858507,
+  "success": 1.0,
+  "progress": 0.9686499174387241,
+  "failures": []
+ },
+ {
+  "body": {
+   "cells": 4,
+   "H": 0.775,
+   "phi": 43.5
+  },
+  "score": 1.522694690621451,
+  "success": 1.0,
+  "progress": 0.9687857473933723,
+  "failures": []
+ },
+ {
+  "body": {
+   "cells": 4,
+   "H": 0.999,
+   "phi": 45.7
+  },
+  "score": 1.5217220945801766,
+  "success": 1.0,
+  "progress": 0.9666250968505032,
+  "failures": []
+ },
+ {
+  "body": {
+   "cells": 3,
+   "H": 0.92,
+   "phi": 41.9
+  },
+  "score": 1.5212208516760382,
+  "success": 1.0,
+  "progress": 0.9668726284335925,
+  "failures": []
+ },
+ {
+  "body": {
+   "cells": 3,
+   "H": 0.851,
+   "phi": 44.5
+  },
+  "score": 1.5199348813091629,
+  "success": 1.0,
+  "progress": 0.9680492472271092,
+  "failures": []
+ },
+ {
+  "body": {
+   "cells": 3,
+   "H": 0.922,
+   "phi": 44.4
+  },
+  "score": 1.5183894732943846,
+  "success": 1.0,
+  "progress": 0.9673181950978589,
+  "failures": []
+ },
+ {
+  "body": {
+   "cells": 5,
+   "H": 1.002,
+   "phi": 31.0
+  },
+  "score": 1.518189312789093,
+  "success": 1.0,
+  "progress": 0.96767942496788,
+  "failures": []
+ },
+ {
+  "body": {
+   "cells": 5,
+   "H": 0.934,
+   "phi": 30.5
+  },
+  "score": 1.5175399192622718,
+  "success": 1.0,
+  "progress": 0.9671411023031034,
+  "failures": []
+ },
+ {
+  "body": {
+   "cells": 3,
+   "H": 0.946,
+   "phi": 46.7
+  },
+  "score": 1.5154575437532845,
+  "success": 1.0,
+  "progress": 0.9682180780161271,
+  "failures": []
+ },
+ {
+  "body": {
+   "cells": 3,
+   "H": 0.823,
+   "phi": 38.2
+  },
+  "score": 1.5149391236392797,
+  "success": 1.0,
+  "progress": 0.967231900038305,
+  "failures": []
+ },
+ {
+  "body": {
+   "cells": 6,
+   "H": 0.765,
+   "phi": 27.7
+  },
+  "score": 1.5149025786083667,
+  "success": 1.0,
+  "progress": 0.967766775037843,
+  "failures": []
+ },
+ {
+  "body": {
+   "cells": 5,
+   "H": 0.9,
+   "phi": 33.8
+  },
+  "score": 1.514593464013928,
+  "success": 1.0,
+  "progress": 0.9671560043919627,
+  "failures": []
+ },
+ {
+  "body": {
+   "cells": 2,
+   "H": 1.112,
+   "phi": 40.9
+  },
+  "score": 1.4053355501797342,
+  "success": 0.875,
+  "progress": 0.9660608695823019,
+  "failures": [
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 2,
+   "H": 1.022,
+   "phi": 38.8
+  },
+  "score": 1.4032905172396528,
+  "success": 0.875,
+  "progress": 0.9653267160218713,
+  "failures": [
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 2,
+   "H": 0.877,
+   "phi": 28.9
+  },
+  "score": 1.4029822396544704,
+  "success": 0.875,
+  "progress": 0.957081797491841,
+  "failures": [
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 2,
+   "H": 1.228,
+   "phi": 48.3
+  },
+  "score": 1.398300443716382,
+  "success": 0.875,
+  "progress": 0.9540517601414523,
+  "failures": [
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 4,
+   "H": 1.13,
+   "phi": 33.6
+  },
+  "score": 1.3958589254387037,
+  "success": 0.875,
+  "progress": 0.9552670420228214,
+  "failures": [
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 4,
+   "H": 0.793,
+   "phi": 34.2
+  },
+  "score": 1.3946174764336892,
+  "success": 0.875,
+  "progress": 0.9563331750488391,
+  "failures": [
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 4,
+   "H": 1.08,
+   "phi": 35.6
+  },
+  "score": 1.3945327381021504,
+  "success": 0.875,
+  "progress": 0.9562653116453864,
+  "failures": [
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 3,
+   "H": 0.972,
+   "phi": 44.7
+  },
+  "score": 1.394251700489253,
+  "success": 0.875,
+  "progress": 0.9664771070073217,
+  "failures": [
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 4,
+   "H": 1.124,
+   "phi": 48.8
+  },
+  "score": 1.391598918193639,
+  "success": 0.875,
+  "progress": 0.9553568462281983,
+  "failures": [
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 3,
+   "H": 1.038,
+   "phi": 43.1
+  },
+  "score": 1.3913586943056613,
+  "success": 0.875,
+  "progress": 0.9534076501874136,
+  "failures": [
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 2,
+   "H": 1.047,
+   "phi": 42.5
+  },
+  "score": 1.3869463819248027,
+  "success": 0.875,
+  "progress": 0.929673252290522,
+  "failures": [
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 2,
+   "H": 0.864,
+   "phi": 39.4
+  },
+  "score": 1.382638727374418,
+  "success": 0.875,
+  "progress": 0.925703437634953,
+  "failures": [
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 6,
+   "H": 0.82,
+   "phi": 31.7
+  },
+  "score": 1.3817031135969,
+  "success": 0.875,
+  "progress": 0.9561367067211144,
+  "failures": [
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 5,
+   "H": 0.964,
+   "phi": 36.0
+  },
+  "score": 1.381494503419621,
+  "success": 0.875,
+  "progress": 0.9562676026397721,
+  "failures": [
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 4,
+   "H": 1.315,
+   "phi": 51.5
+  },
+  "score": 1.3806490663833106,
+  "success": 0.875,
+  "progress": 0.9290098906514421,
+  "failures": [
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 6,
+   "H": 0.887,
+   "phi": 32.0
+  },
+  "score": 1.3800266794884435,
+  "success": 0.875,
+  "progress": 0.9522259477790626,
+  "failures": [
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 6,
+   "H": 1.028,
+   "phi": 34.9
+  },
+  "score": 1.379137662126175,
+  "success": 0.875,
+  "progress": 0.9553520986196042,
+  "failures": [
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 2,
+   "H": 0.744,
+   "phi": 40.3
+  },
+  "score": 1.3790313955632654,
+  "success": 0.875,
+  "progress": 0.9173575941291446,
+  "failures": [
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 6,
+   "H": 1.008,
+   "phi": 35.5
+  },
+  "score": 1.3780091983133598,
+  "success": 0.875,
+  "progress": 0.9551522259976085,
+  "failures": [
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 4,
+   "H": 1.0,
+   "phi": 50.0
+  },
+  "score": 1.37642125177486,
+  "success": 0.875,
+  "progress": 0.9256995129997385,
+  "failures": [
+   "stuck"
+  ],
+  "reference": true
+ },
+ {
+  "body": {
+   "cells": 4,
+   "H": 1.054,
+   "phi": 28.0
+  },
+  "score": 1.358699054175419,
+  "success": 0.875,
+  "progress": 0.8759892921828474,
+  "failures": [
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 5,
+   "H": 1.176,
+   "phi": 34.6
+  },
+  "score": 1.35588650716464,
+  "success": 0.875,
+  "progress": 0.8985449762669726,
+  "failures": [
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 5,
+   "H": 1.125,
+   "phi": 35.2
+  },
+  "score": 1.3556712936578192,
+  "success": 0.875,
+  "progress": 0.8987218553884074,
+  "failures": [
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 5,
+   "H": 1.033,
+   "phi": 34.5
+  },
+  "score": 1.3548851768791457,
+  "success": 0.875,
+  "progress": 0.8980495817920615,
+  "failures": [
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 5,
+   "H": 1.085,
+   "phi": 34.7
+  },
+  "score": 1.3541663841494076,
+  "success": 0.875,
+  "progress": 0.8971333227052358,
+  "failures": [
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 5,
+   "H": 1.02,
+   "phi": 35.8
+  },
+  "score": 1.3522825570561663,
+  "success": 0.875,
+  "progress": 0.8967401662040562,
+  "failures": [
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 6,
+   "H": 0.988,
+   "phi": 28.6
+  },
+  "score": 1.3449457866654002,
+  "success": 0.875,
+  "progress": 0.8724816375654347,
+  "failures": [
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 6,
+   "H": 0.971,
+   "phi": 30.6
+  },
+  "score": 1.343296864917848,
+  "success": 0.875,
+  "progress": 0.873359789907155,
+  "failures": [
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 5,
+   "H": 1.009,
+   "phi": 57.5
+  },
+  "score": 1.3405814291083853,
+  "success": 0.875,
+  "progress": 0.8765863446885804,
+  "failures": [
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 6,
+   "H": 1.084,
+   "phi": 33.9
+  },
+  "score": 1.340244271669917,
+  "success": 0.875,
+  "progress": 0.8730746598482654,
+  "failures": [
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 5,
+   "H": 0.884,
+   "phi": 48.2
+  },
+  "score": 1.3335982691601096,
+  "success": 0.875,
+  "progress": 0.8775479834876116,
+  "failures": [
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 6,
+   "H": 1.088,
+   "phi": 48.7
+  },
+  "score": 1.2482629283333997,
+  "success": 0.75,
+  "progress": 0.943109352892102,
+  "failures": [
+   "stuck",
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 3,
+   "H": 1.158,
+   "phi": 40.8
+  },
+  "score": 1.2467010696968355,
+  "success": 0.75,
+  "progress": 0.9203355207744555,
+  "failures": [
+   "stuck",
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 2,
+   "H": 0.906,
+   "phi": 43.2
+  },
+  "score": 1.2452964256611503,
+  "success": 0.75,
+  "progress": 0.9012995879372077,
+  "failures": [
+   "stuck",
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 4,
+   "H": 1.071,
+   "phi": 43.5
+  },
+  "score": 1.2451658822205194,
+  "success": 0.75,
+  "progress": 0.914301602828487,
+  "failures": [
+   "stuck",
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 2,
+   "H": 0.987,
+   "phi": 43.0
+  },
+  "score": 1.235216013058387,
+  "success": 0.75,
+  "progress": 0.8800046114983431,
+  "failures": [
+   "stuck",
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 6,
+   "H": 0.7,
+   "phi": 32.7
+  },
+  "score": 1.231683177585211,
+  "success": 0.75,
+  "progress": 0.9095774495341828,
+  "failures": [
+   "stuck",
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 4,
+   "H": 1.091,
+   "phi": 25.0
+  },
+  "score": 1.1988019726456363,
+  "success": 0.75,
+  "progress": 0.801054277962578,
+  "failures": [
+   "stuck",
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 6,
+   "H": 0.875,
+   "phi": 45.4
+  },
+  "score": 1.091438487515397,
+  "success": 0.625,
+  "progress": 0.8931206811730299,
+  "failures": [
+   "stuck",
+   "stuck",
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 5,
+   "H": 1.319,
+   "phi": 28.4
+  },
+  "score": 1.0245379106038688,
+  "success": 0.625,
+  "progress": 0.721894619841825,
+  "failures": [
+   "stuck",
+   "stuck",
+   "stuck"
+  ]
+ },
+ {
+  "body": {
+   "cells": 6,
+   "H": 1.153,
+   "phi": 28.8
+  },
+  "score": 1.0181819789418647,
+  "success": 0.625,
+  "progress": 0.713994647564533,
+  "failures": [
+   "stuck",
+   "stuck",
+   "stuck"
+  ]
+ }
+]

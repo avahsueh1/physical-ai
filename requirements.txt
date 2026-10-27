@@ -1,0 +1,5 @@
+numpy>=1.24
+matplotlib>=3.7
+pytest>=7
+# also needs: Node.js >= 18 (physics) and ffmpeg (videos)
+#   conda install -c conda-forge nodejs ffmpeg
