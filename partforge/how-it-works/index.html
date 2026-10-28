@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How PartForge works · William Chang</title>
+<meta name="description" content="The ideas behind PartForge, with the lines of code that carry them: parts made of parts, flattening nested circuits with union-find, one tick of delay per gate, and a robot whose brain is a circuit.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230E1A2E'/%3E%3Crect x='6' y='9' width='9' height='14' rx='2' fill='none' stroke='%237AA2FF' stroke-width='2.2'/%3E%3Cpath d='M15 16h5' stroke='%237AA2FF' stroke-width='2.2'/%3E%3Ccircle cx='23' cy='16' r='3.6' fill='%23F2B84B'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../how-it-works.css">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="../../../">William Chang</a>
+    <span class="crumb"><i>/</i><a class="p" href="../../../#projects">Projects</a><i class="p">/</i><a href="../">PartForge</a></span>
+    <a class="backbtn" href="../"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg><span>Back to project</span></a>
+    <button class="theme" id="theme" aria-label="Switch light or dark theme">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="head">
+      <p class="kicker">How it works</p>
+      <h1>PartForge</h1>
+      <p class="lede">A part is either a gate or a circuit made of other parts, so a NAND becomes an Inverter, two Inverters become a robot's brain, and the robot drives on whatever the circuit decides. <span>New to logic gates? Start with the <a href="#gates">two-minute primer</a> and the <a href="#tutorial">tutorial</a>. After those come the four ideas that make it work, each with the few lines of code that carry it.</span></p>
+      <ul class="focus"><li>Digital logic</li><li>Hierarchical design</li><li>Union-find</li><li>Discrete-time simulation</li><li>Differential drive</li></ul>
+    </div>
+
+    <div class="glance">
+      <div>
+        <h2>From a click to a moving robot</h2>
+        <ol class="flow">
+          <li><b>Draw</b><span>parts and wires on the board; Input and Output nodes are the pins</span></li>
+          <li><b>Save</b><span>the circuit becomes a part, checked so it can't contain itself</span></li>
+          <li><b>Flatten</b><span>nested parts are expanded into one flat list of gates</span></li>
+          <li><b>Tick</b><span>every gate reads the last tick's signals and writes the next</span></li>
+          <li><b>Drive</b><span>sensors go in, 32 ticks run, motor pins turn the wheels</span></li>
+        </ol>
+      </div>
+      <div>
+        <h2>The ideas</h2>
+        <ol class="toc">
+          <li><a href="#gates"><em>A</em>Logic gates in two minutes</a></li>
+          <li><a href="#tutorial"><em>B</em>Tutorial: your first brain</a></li>
+          <li><a href="#parts"><em>01</em>Parts made of parts</a></li>
+          <li><a href="#flatten"><em>02</em>Flatten before you simulate</a></li>
+          <li><a href="#tick"><em>03</em>Every gate waits one tick</a></li>
+          <li><a href="#robot"><em>04</em>A circuit as a brain</a></li>
+          <li><a href="#limits"><em>→</em>Limits</a></li>
+          <li><a href="#check"><em>→</em>Check it</a></li>
+          <li><a href="#code"><em>→</em>Read further</a></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <section class="block" id="gates">
+    <div class="wrap sec">
+      <header><span class="no">A</span><h2>Logic gates in two minutes</h2><p>Start here if gates are new to you</p></header>
+      <div>
+        <div class="prose">
+          <p>Every wire on the board carries one <b>bit</b>: on or off, 1 or 0. On the board an on wire is drawn green and an off wire grey. For the robot, a bit is a simple yes-or-no fact. <code>lineL</code> is on when the left sensor is over the black line. <code>motorL</code> is on when the left wheel should spin forward.</p>
+          <p>A <b>gate</b> is a tiny box with a fixed rule. It looks at the wires coming in on its left and sets the wire going out on its right. That's all a gate does. The rule is usually written as a <b>truth table</b>, which lists every combination of inputs and the output each one gives. Here are the gates in the Parts list:</p>
+        </div>
+<div class="gates">
+<div class="gate"><h4>NOT</h4><p>Flips its one input: on becomes off, off becomes on.</p><table class="tt"><tr><th>in</th><th>out</th></tr><tr><td>0</td><td class=on>1</td></tr><tr><td class=on>1</td><td>0</td></tr></table><p>Stop the left wheel <i>when</i> the left sensor sees the line.</p></div>
+<div class="gate"><h4>AND</h4><p>On only when <b>both</b> inputs are on.</p><table class="tt"><tr><th>a</th><th>b</th><th>out</th></tr><tr><td>0</td><td>0</td><td>0</td></tr><tr><td>0</td><td class=on>1</td><td>0</td></tr><tr><td class=on>1</td><td>0</td><td>0</td></tr><tr><td class=on>1</td><td class=on>1</td><td class=on>1</td></tr></table><p>Drive only if the path is clear <i>and</i> the battery is fine.</p></div>
+<div class="gate"><h4>OR</h4><p>On when <b>either</b> input (or both) is on.</p><table class="tt"><tr><th>a</th><th>b</th><th>out</th></tr><tr><td>0</td><td>0</td><td>0</td></tr><tr><td>0</td><td class=on>1</td><td class=on>1</td></tr><tr><td class=on>1</td><td>0</td><td class=on>1</td></tr><tr><td class=on>1</td><td class=on>1</td><td class=on>1</td></tr></table><p>Back up if the bump sensor <i>or</i> a line sensor fires.</p></div>
+<div class="gate"><h4>XOR</h4><p>On when the inputs are <b>different</b>.</p><table class="tt"><tr><th>a</th><th>b</th><th>out</th></tr><tr><td>0</td><td>0</td><td>0</td></tr><tr><td>0</td><td class=on>1</td><td class=on>1</td></tr><tr><td class=on>1</td><td>0</td><td class=on>1</td></tr><tr><td class=on>1</td><td class=on>1</td><td>0</td></tr></table><p>Exactly one line sensor sees the line: the car is drifting.</p></div>
+<div class="gate"><h4>NAND</h4><p>AND, then flipped: off only when <b>both</b> are on.</p><table class="tt"><tr><th>a</th><th>b</th><th>out</th></tr><tr><td>0</td><td>0</td><td class=on>1</td></tr><tr><td>0</td><td class=on>1</td><td class=on>1</td></tr><tr><td class=on>1</td><td>0</td><td class=on>1</td></tr><tr><td class=on>1</td><td class=on>1</td><td>0</td></tr></table><p>The universal gate. Every other gate can be built from NANDs alone.</p></div>
+<div class="gate"><h4>NOR</h4><p>OR, then flipped: on only when <b>both</b> are off.</p><table class="tt"><tr><th>a</th><th>b</th><th>out</th></tr><tr><td>0</td><td>0</td><td class=on>1</td></tr><tr><td>0</td><td class=on>1</td><td>0</td></tr><tr><td class=on>1</td><td>0</td><td>0</td></tr><tr><td class=on>1</td><td class=on>1</td><td>0</td></tr></table><p>Two NORs wired into each other make the SR Latch, one bit of memory.</p></div>
+<div class="gate"><h4>HIGH</h4><p>No inputs. Its output is always on.</p><table class="tt"><tr><th>out</th></tr><tr><td class=on>1</td></tr></table><p>Wire it to <code>motorR</code> for a wheel that never stops.</p></div>
+</div>
+        <div class="prose">
+          <h3>Why the example robot follows a line</h3>
+          <p>The Line Follower is just two NOTs (each built from a NAND, which is what the Inverter part is). The left sensor feeds the left motor through one, and the right sensor feeds the right motor through the other. The robot starts straddling the line, so normally neither sensor sees it. Here are the four cases:</p>
+        </div>
+        <div class="tablewrap"><table class="cases">
+          <tr><th>lineL</th><th>lineR</th><th>motorL</th><th>motorR</th><th>What the robot does</th></tr>
+          <tr><td class="m">off</td><td class="m">off</td><td class="m on">fwd</td><td class="m on">fwd</td><td>Drives straight. The line is between the sensors, where it should be.</td></tr>
+          <tr><td class="m on">ON</td><td class="m">off</td><td class="m">stop</td><td class="m on">fwd</td><td>It drifted right, so the line is under the left sensor. The left wheel stops and the right one keeps going, which swings the robot left, back over the line.</td></tr>
+          <tr><td class="m">off</td><td class="m on">ON</td><td class="m on">fwd</td><td class="m">stop</td><td>The mirror image: it swings right.</td></tr>
+          <tr><td class="m on">ON</td><td class="m on">ON</td><td class="m">stop</td><td class="m">stop</td><td>Both wheels stop. This doesn't happen on the oval, but it would at a crossing.</td></tr>
+        </table></div>
+        <div class="prose">
+          <p>No step in this needs a program. Two flipped wires, applied about sixty times a second, are enough to steer.</p>
+          <h3>Where the Lego idea comes in</h3>
+          <p>Gates snap together the way bricks do. Wire a few gates together, press <span class="ui">Save as…</span>, and the circuit becomes a new block in <i>Your parts</i>. It has its own pins and can go inside the next circuit. The Inverter is one NAND, the Line Follower is two Inverters, and a part you build next could use the Line Follower as one of its pieces. In PartForge the bricks are pieces of logic, not motors and wheels. The robot's body is fixed, and what you build is its brain.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="tutorial">
+    <div class="wrap sec">
+      <header><span class="no">B</span><h2>Tutorial</h2><p>About ten minutes, from the example robot to a brain of your own</p></header>
+      <div>
+        <div class="prose">
+          <p>Open <a href="../">PartForge</a> in a second tab and keep this page beside it. There are three panels: <b>Parts</b> on the left (the bricks), the <b>board</b> in the middle (where you wire them), and <b>Test drive</b> on the right (the robot). A mouse is easiest. On a phone, tap instead of click and use the <span class="ui">Edit</span> and <span class="ui">Delete</span> buttons instead of double-click and right-click.</p>
+        </div>
+        <ol class="tut">
+          <li>
+            <h3>Watch the example drive</h3>
+            <p>In <b>Test drive</b>, check that <b>Brain</b> says <i>Line Follower</i>, then press <span class="ui">Run</span>.</p>
+            <p class="see"><b>You should see</b> the blue robot lap the oval and leave a gold trail. Under the track, <code>lineL / lineR</code> blink ON as each sensor brushes the line, and the motor on that side changes to <i>stop</i> at the same moment. That's the table above, running live.</p>
+          </li>
+          <li>
+            <h3>Flip the inputs yourself</h3>
+            <p>The board shows the Line Follower's wiring. Its inputs are the rounded <code>lineL</code> and <code>lineR</code> nodes on the left. Click <code>lineL</code> once to switch it on. Click it again to switch it off.</p>
+            <p>Set <b>Signal speed</b> (top right of the board) to <i>slow</i> if you want to watch the change travel from gate to gate.</p>
+            <p class="see"><b>You should see</b> the wire out of <code>lineL</code> turn green and the wire into <code>motorL</code> turn grey. Turning a sensor on turns its motor off, because the Inverter flips the bit.</p>
+          </li>
+          <li>
+            <h3>Look inside a part</h3>
+            <p>Double-click either <b>Inverter</b> block. The board opens the Inverter itself: one NAND with both of its inputs tied to the same wire. Click its <code>in</code> node to check that <code>out</code> is always the opposite.</p>
+            <p>To get back, click the <span class="ui">✎</span> next to <i>Line Follower</i> under <b>Your parts</b>.</p>
+            <p class="see"><b>You should see</b> that NAND(<i>a</i>, <i>a</i>) is NOT <i>a</i>: in the NAND table, the rows where a and b are equal give 1 then 0.</p>
+          </li>
+          <li>
+            <h3>Wire your first gate</h3>
+            <p>Press <span class="ui">New</span> for an empty board, then click these in the Parts list. Each click drops a block in the middle, so drag each one aside before adding the next.</p>
+            <ul><li><span class="ui">Input</span> twice. They're named <code>in1</code> and <code>in2</code>.</li><li><span class="ui">AND</span> once.</li><li><span class="ui">Output</span> once. It's named <code>out1</code>.</li></ul>
+            <p>To wire, press on a <b>dot on the right edge</b> of a block (an output), drag, and let go on a <b>dot on the left edge</b> of another (an input). Wire <code>in1</code> to the AND's <code>a</code>, <code>in2</code> to its <code>b</code>, and the AND's <code>out</code> to <code>out1</code>.</p>
+            <p>Now click the inputs to try all four combinations.</p>
+            <p class="see"><b>You should see</b> <code>out1</code> light up only when both inputs are on, matching the AND table. Right-click the AND to delete it, drop in an <span class="ui">XOR</span> and rewire it the same way. Now <code>out1</code> is on when exactly one input is on.</p>
+          </li>
+          <li>
+            <h3>Turn it into a brick</h3>
+            <p>Press <span class="ui">Save as…</span> and name it <i>My Gate</i>. Then press <span class="ui">New</span> and click <i>My Gate</i> under <b>Your parts</b>.</p>
+            <p class="see"><b>You should see</b> your whole circuit as a single block, with pins <code>in1</code>, <code>in2</code> and <code>out1</code>. The list shows it as <code>2→1</code>, meaning two inputs and one output. Pin names come from the Input and Output labels, so to rename a pin, double-click its node before saving.</p>
+          </li>
+          <li>
+            <h3>Build the robot a new brain</h3>
+            <p>This brain ignores the line. It drives forward and, when it hits the edge of the table, spins away. Press <span class="ui">New</span> and add:</p>
+            <ul>
+              <li>one <span class="ui">Input</span>. Double-click it and rename it <code>bump</code>.</li>
+              <li>one <span class="ui">NOT</span> and one <span class="ui">HIGH</span>.</li>
+              <li>three <span class="ui">Output</span> nodes, renamed <code>motorL</code>, <code>revL</code> and <code>motorR</code>.</li>
+            </ul>
+            <p>Then wire <code>bump</code> to NOT, NOT to <code>motorL</code>, <code>bump</code> to <code>revL</code>, and HIGH to <code>motorR</code>. In Test drive, set <b>Brain</b> to <i>This circuit (live)</i>, press <span class="ui">Reset</span>, then <span class="ui">Run</span>.</p>
+            <p class="see"><b>You should see</b> the robot drive off the line and across the table. When it touches the edge, <code>bump</code> turns on, the left wheel runs backward while the right runs forward, and the robot spins in place until it's clear. Then it drives on. Press <span class="ui">Save as…</span> and call it <i>Wall Bouncer</i>, and it appears in the Brain menu.</p>
+          </li>
+          <li>
+            <h3>Try it on your own</h3>
+            <ul>
+              <li><b>NAND only.</b> Build AND from two NANDs (one NAND, then an Inverter), and OR from three (invert each input, then NAND them). Check them against the tables.</li>
+              <li><b>Both at once.</b> Make a brain that follows the line but also backs away from the edge. Hint: start from the Line Follower, wire <code>bump</code> straight to <code>revL</code>, and use an AND so <code>motorL</code> only runs while <code>bump</code> is off.</li>
+              <li><b>Memory.</b> Open the <i>SR Latch</i>. Pulse <code>set</code> on and off and see that <code>q</code> stays on. That's one remembered bit, made from two NORs.</li>
+            </ul>
+          </li>
+        </ol>
+        <div class="callout">
+          <b>If something doesn't work</b>
+          <p><b>My part isn't in the Brain menu.</b> A saved brain may only have inputs named <code>lineL</code>, <code>lineR</code> or <code>bump</code>, and needs at least one motor output. <i>This circuit (live)</i> always works.</p>
+          <p><b>A wire won't connect.</b> Wires go from an output dot (right side) to an input dot (left side). An input takes only one wire, so a new wire replaces the old one. Drag a wire off an input to move or remove it.</p>
+          <p><b>An extra Output, like <code>out1</code>, is sitting there.</b> It does nothing unless something is wired to it. Right-click it, or select it and press Delete.</p>
+          <p><b>I overwrote an example.</b> <span class="ui">Save part</span> saves over the part you opened, while <span class="ui">Save as…</span> makes a copy. The <span class="ui">Examples</span> button puts the originals back and leaves your parts alone.</p>
+        </div>
+        <div class="prose"><p>The sections below are for when you want to know how the page itself works: how nested parts are flattened, why every gate waits one tick, and how the robot reads its brain.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="parts">
+    <div class="wrap sec">
+      <header><span class="no">01</span><h2>Parts made of parts</h2><p>One idea for gates, adders and brains</p></header>
+      <div>
+        <div class="prose">
+          <p>There are only two kinds of part. A <b>primitive</b> (NAND, AND, OR, NOR, XOR, NOT, HIGH) has a function from input bits to output bits. A <b>composite</b> has a circuit inside it: nodes, each of which is another part, and wires from output pins to input pins. Saving a circuit is all it takes to make a new part, and the new part can go inside the next one.</p>
+          <p>The Inverter that ships with the page is the smallest example: one NAND with both inputs tied together, because NAND(<i>a</i>, <i>a</i>) = NOT <i>a</i>. Circuits are plain data, so the examples are written with a one-line-per-wire shorthand.</p>
+        </div>
+<figure class="code" data-src="../web/engine/examples.js" data-start="20"><figcaption><a href="../web/engine/examples.js">web/engine/examples.js</a><span>lines 20–32</span></figcaption><pre data-lang="js" data-mark="30"><code>  {
+    id: 'Inverter',
+    name: 'Inverter',
+    description: 'NOT built from a single NAND with both inputs tied together.',
+    circuit: circuit(
+      [
+        ['a', IN, 60, 100, 'in'],
+        ['n', 'NAND', 220, 90],
+        ['o', OUT, 400, 100, 'out'],
+      ],
+      ['a.out -&gt; n.a', 'a.out -&gt; n.b', 'n.out -&gt; o.in'],
+    ),
+  },</code></pre></figure>
+        <ol class="notes">
+          <li data-line="30">Three wires: the input pin feeds both NAND inputs, and the NAND feeds the output pin. The positions (60, 220, 400) only matter for drawing.</li>
+        </ol>
+        <div class="prose">
+          <p>A composite part's pins aren't declared anywhere. They're read off its Input and Output nodes, so renaming a node renames the pin, and moving it up or down reorders the pins.</p>
+        </div>
+<figure class="code" data-src="../web/engine/parts.js" data-start="62"><figcaption><a href="../web/engine/parts.js">web/engine/parts.js</a><span>lines 62–70</span></figcaption><pre data-lang="js" data-mark="67"><code>/** Pin order of a composite part follows the vertical order of its IN/OUT nodes. */
+export function deriveInterface(c) {
+  const pins = (kind) =&gt;
+    c.nodes
+      .filter((n) =&gt; n.part === kind)
+      .sort((a, b) =&gt; a.y - b.y || a.x - b.x)
+      .map((n) =&gt; (n.label ?? '').trim());
+  return { inputs: pins(IN), outputs: pins(OUT) };
+}</code></pre></figure>
+        <ol class="notes">
+          <li data-line="67">Top to bottom, then left to right. This is why the Full Adder in the tests gets its pins in the order <code>a, b, cin</code>: that's how the nodes are stacked.</li>
+        </ol>
+        <div class="prose">
+          <p>The one thing a part may not do is contain itself, even indirectly (A inside B inside A), because flattening it would never end. Saving runs a depth-first search over what the circuit uses.</p>
+        </div>
+<figure class="code" data-src="../web/engine/parts.js" data-start="82"><figcaption><a href="../web/engine/parts.js">web/engine/parts.js</a><span>lines 82–90</span></figcaption><pre data-lang="js" data-mark="84,89"><code>  /** True if `partId` uses `target` anywhere inside it (or is it). */
+  dependsOn(partId, target, seen = new Set()) {
+    if (partId === target) return true;
+    if (seen.has(partId)) return false;
+    seen.add(partId);
+    const def = this.parts.get(partId);
+    if (!def?.circuit) return false;
+    return def.circuit.nodes.some((n) =&gt; this.dependsOn(n.part, target, seen));
+  }</code></pre></figure>
+        <ol class="notes">
+          <li data-line="84">Found it: this part is, or contains, the one being saved.</li>
+          <li data-line="89">Otherwise look inside every node. The <code>seen</code> set stops it re-walking a part that's used many times, so a big design is checked in time proportional to the number of distinct parts.</li>
+        </ol>
+        <div class="prose">
+          <p>The library also refuses unlabelled or duplicate pins, and won't delete a part that another part uses. Saved parts are written to the browser in dependency order (Inverter before Line Follower), so they can be loaded back one at a time.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="flatten">
+    <div class="wrap sec">
+      <header><span class="no">02</span><h2>Flatten before you simulate</h2><p>Nesting costs nothing at run time</p></header>
+      <div>
+        <div class="prose">
+          <p>Simulating parts inside parts directly would mean passing signals across every boundary on every tick. Instead, <code>compile()</code> expands the whole design once into a <b>netlist</b>: a flat list of primitive gates, where each signal is just a number (a net). The simulator never sees a composite part.</p>
+          <p>Every output pin gets its own net before any wiring happens, so a wire can point at a gate that hasn't been visited yet. That is what lets circuits loop back on themselves.</p>
+        </div>
+<figure class="code" data-src="../web/engine/compile.js" data-start="36"><figcaption><a href="../web/engine/compile.js">web/engine/compile.js</a><span>lines 36–48</span></figcaption><pre data-lang="js" data-mark="41,46,48"><code>    // Allocate a net for every output pin up front, so wires can form loops.
+    const outNet = new Map();
+    for (const n of c.nodes) {
+      const def = lib.get(n.part);
+      if (!def) throw new Error(`Unknown part "${n.part}".`);
+      for (const p of def.outputs) outNet.set(`${n.id}:${p}`, b.newNet());
+    }
+    const driver = new Map();
+    for (const w of c.wires) {
+      const net = outNet.get(`${w.from.node}:${w.from.pin}`);
+      if (net !== undefined) driver.set(`${w.to.node}:${w.to.pin}`, net);
+    }
+    const src = (node, pin) =&gt; driver.get(`${node}:${pin}`) ?? LOW;</code></pre></figure>
+        <ol class="notes">
+          <li data-line="41">One fresh net per output pin, for every node in this circuit.</li>
+          <li data-line="46">A wire just records which net feeds an input pin. An input has one driver; the editor replaces the old wire if you connect a second.</li>
+          <li data-line="48">An input with no wire reads net 0, which is always low. Leaving a pin unconnected is never an error, only a 0.</li>
+        </ol>
+        <div class="prose">
+          <p>Then each node is handled by kind. Gates are copied straight into the netlist. A composite part is expanded recursively, with its input pins bound to the nets outside it.</p>
+        </div>
+<figure class="code" data-src="../web/engine/compile.js" data-start="59"><figcaption><a href="../web/engine/compile.js">web/engine/compile.js</a><span>lines 59–70</span></figcaption><pre data-lang="js" data-mark="60,64-65,67-69"><code>      if (n.part === IN) {
+        if (bind) b.alias(outs[0], bind.get(label) ?? LOW);
+        else if (!topInputs.has(label)) topInputs.set(label, outs[0]);
+      } else if (n.part === OUT) {
+        if (!results.has(label)) results.set(label, ins[0]);
+      } else if (def.eval) {
+        b.gates.push({ partId: def.id, eval: def.eval, ins, outs });
+      } else if (def.circuit) {
+        const inner = new Map(def.inputs.map((p, i) =&gt; [p, ins[i]]));
+        const res = expand(def.circuit, inner, depth + 1);
+        def.outputs.forEach((p, i) =&gt; b.alias(outs[i], res.get(p) ?? LOW));
+      }</code></pre></figure>
+        <ol class="notes">
+          <li data-line="60">Inside a part, an Input node doesn't make a new signal. Its net is declared to be the same signal as whatever drives that pin outside.</li>
+          <li data-line="64-65">A primitive: add it as a gate.</li>
+          <li data-line="67-69">A composite: expand its circuit with the pin bindings, then declare each of its output nets equal to whatever the inner Output node reads.</li>
+        </ol>
+        <div class="prose">
+          <p>“Declare these two nets equal” is exactly what union-find is for. Each net points at a parent; following parents leads to the net that represents the whole group. After expansion, every group is renumbered to one compact net, so the Line Follower, three levels deep in the editor, becomes just 2 NAND gates on 5 nets.</p>
+        </div>
+<figure class="code" data-src="../web/engine/compile.js" data-start="14"><figcaption><a href="../web/engine/compile.js">web/engine/compile.js</a><span>lines 14–28</span></figcaption><pre data-lang="js" data-mark="16,26"><code>  find(n) {
+    while (this.parent[n] !== n) {
+      this.parent[n] = this.parent[this.parent[n]];
+      n = this.parent[n];
+    }
+    return n;
+  }
+  /** Make a and b the same signal. LOW always stays the root. */
+  alias(a, b) {
+    const ra = this.find(a),
+      rb = this.find(b);
+    if (ra === rb) return;
+    if (ra === LOW) this.parent[rb] = ra;
+    else this.parent[ra] = rb;
+  }</code></pre></figure>
+        <ol class="notes">
+          <li data-line="16">Path halving: each lookup also shortens the chain it walks, so lookups stay close to constant time however deep the nesting.</li>
+          <li data-line="26">Net 0 always stays the root of its group, so an inner pin tied to an unconnected outer input stays low.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="tick">
+    <div class="wrap sec">
+      <header><span class="no">03</span><h2>Every gate waits one tick</h2><p>Why memory and oscillators just work</p></header>
+      <div>
+        <div class="prose">
+          <p>The simulator keeps two arrays of bits: the signals now and the signals next. On each tick every gate reads <i>now</i> and writes <i>next</i>, then the arrays swap. Every gate therefore has exactly one tick of delay, like a real gate's propagation delay.</p>
+          <p>That one rule is what makes feedback meaningful. Without a delay, a NOT gate wired to its own input has no consistent value. With one, it flips every tick: a clock. Two cross-coupled NOR gates hold whichever state they were last pushed into: the SR Latch in the parts list, one bit of memory.</p>
+        </div>
+<figure class="code" data-src="../web/engine/simulator.js" data-start="32"><figcaption><a href="../web/engine/simulator.js">web/engine/simulator.js</a><span>lines 32–50</span></figcaption><pre data-lang="js" data-mark="34,36-37,46-47"><code>  step() {
+    const { values, next } = this;
+    next.set(values);
+    for (const g of this.netlist.gates) {
+      const outs = g.eval(g.ins.map((n) =&gt; values[n] === 1));
+      for (let i = 0; i &lt; g.outs.length; i++) next[g.outs[i]] = outs[i] ? 1 : 0;
+    }
+    next[LOW] = 0;
+    let changed = false;
+    for (let i = 0; i &lt; values.length; i++)
+      if (values[i] !== next[i]) {
+        changed = true;
+        break;
+      }
+    this.next = values;
+    this.values = next;
+    this.ticks++;
+    return changed;
+  }</code></pre></figure>
+        <ol class="notes">
+          <li data-line="34">Start from the current signals, so nets nobody drives (like the Inputs you click) keep their value.</li>
+          <li data-line="36-37">Every gate reads only the old array, so the order gates are listed in doesn't matter.</li>
+          <li data-line="46-47">Swap the two arrays instead of copying, so a tick allocates nothing.</li>
+        </ol>
+        <div class="prose">
+          <p><code>settle()</code> steps until a tick changes nothing, and reports when that never happens. The tests use it to check that adders settle and that a self-wired NOT doesn't. A real quirk shows up here too: the SR Latch, powered up with both inputs off, flickers forever until you pulse set or reset, which is how an idealised latch with identical gates behaves. The page's <b>Signal speed</b> menu sets how many ticks run per frame (1, 4 or 64), so you can slow it down and watch signals travel.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="robot">
+    <div class="wrap sec">
+      <header><span class="no">04</span><h2>A circuit as a brain</h2><p>Sense, think, act, sixty times a second</p></header>
+      <div>
+        <div class="prose">
+          <p>The robot is a two-wheeled, differential-drive car on a table with an oval line. Any part whose pins are named after its sensors (<code>lineL</code>, <code>lineR</code>, <code>bump</code>) and motors (<code>motorL</code>, <code>motorR</code>, optionally <code>revL</code>, <code>revR</code>) can be its brain. Each physics step reads the sensors, runs the brain's circuit for 32 ticks so the signals settle, and turns the motor pins into wheel speeds.</p>
+        </div>
+<figure class="code" data-src="../web/vehicle/world.js" data-start="99"><figcaption><a href="../web/vehicle/world.js">web/vehicle/world.js</a><span>lines 99–117</span></figcaption><pre data-lang="js" data-mark="103-106,111,115-117"><code>  step(dt) {
+    const c = this.config;
+    this.sensors = this.readSensors();
+    if (this.brain) {
+      for (const pin of SENSOR_PINS) this.brain.setInput(pin, this.sensors[pin]);
+      this.brain.run(c.brainTicksPerStep);
+      const o = (p) =&gt; (this.brain.output(p) ? 1 : 0);
+      this.motors = { left: o('motorL') - o('revL'), right: o('motorR') - o('revR') };
+    }
+    const vl = this.motors.left * c.maxSpeed,
+      vr = this.motors.right * c.maxSpeed;
+    const v = (vl + vr) / 2;
+    this.heading += ((vl - vr) / c.wheelBase) * dt;
+    let nx = this.x + Math.cos(this.heading) * v * dt;
+    let ny = this.y + Math.sin(this.heading) * v * dt;
+    const r = c.radius;
+    const cx = Math.max(r, Math.min(c.width - r, nx));
+    const cy = Math.max(r, Math.min(c.height - r, ny));
+    this.bumped = cx !== nx || cy !== ny;</code></pre></figure>
+        <ol class="notes">
+          <li data-line="103-106">Sensors in, 32 ticks, motors out. Forward and reverse on the same wheel cancel, so a wheel is +1, 0 or −1.</li>
+          <li data-line="111">Differential drive: the difference between the wheel speeds, divided by the distance between the wheels, is the turning rate. Stop one wheel and the robot pivots toward that side.</li>
+          <li data-line="115-117">The table edge stops the robot and raises <code>bump</code> on the next step.</li>
+        </ol>
+        <div class="prose">
+          <p>That turning rule is all the example brain needs. The Line Follower connects each sensor to the motor on the same side through an Inverter: while the left sensor sees the line, the left wheel stops and the car turns left, back onto it. Both sensors start off the line (it runs between them), so both wheels drive. In the simulator it laps the track in 17.7 seconds without its centre ever straying more than 3.4 px from the line, and a test checks a full lap on every run.</p>
+          <p>“This circuit (live)” in the Brain menu recompiles the board after every edit, so you can rewire the brain while the robot is driving.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="limits">
+    <div class="wrap sec">
+      <header><span class="no">→</span><h2>Limits</h2><p>Honest caveats</p></header>
+      <div>
+        <div class="prose">
+          <ul>
+            <li>Signals are single bits, and wheels are only full forward, stopped or full reverse. There are no buses, no analog values and no motor speed control yet.</li>
+            <li>There's no clock part and no timer, so a brain can't yet do “back up for one second”. You can build a clock from a self-wired NOT, but its speed depends on the tick rate, not on real time.</li>
+            <li>Every gate has the same one-tick delay. Real gates differ, and races that depend on those differences don't appear here.</li>
+            <li>The robot is kinematic: no mass, friction or wheel slip, and the table edge simply stops it. It is meant to make the logic visible, not to model a real car.</li>
+            <li>The editor has no undo, multi-select or copy and paste. Wiring on a phone works, but a mouse is easier.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="check">
+    <div class="wrap sec">
+      <header><span class="no">→</span><h2>Check it</h2><p>Plain Node, no install</p></header>
+      <div>
+        <pre class="cmd">node --test projects/partforge/tests/*.mjs     # 17 checks on the same files the page runs</pre>
+        <div class="prose">
+          <p>The tests cover every gate's truth table, the Inverter, the half adder, a full adder built from two half adders (all eight input combinations), the SR latch remembering a bit, a self-wired NOT that never settles, the library's rules, saving and loading, and the robot: driving straight, turning, feeling a bump, lapping the track with the Line Follower, and roaming the table with a wall-bouncing brain.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="code">
+    <div class="wrap sec">
+      <header><span class="no">→</span><h2>Read further</h2><p>Where everything lives</p></header>
+      <div>
+        <ul class="files">
+          <li><a href="../web/engine/parts.js">web/engine/parts.js</a> <span>the built-in gates, pins from Input/Output nodes, the part library and its rules</span></li>
+          <li><a href="../web/engine/compile.js">web/engine/compile.js</a> <span>flattening nested parts into a netlist with union-find</span></li>
+          <li><a href="../web/engine/simulator.js">web/engine/simulator.js</a> <span>the two-array, one-tick-per-gate simulator</span></li>
+          <li><a href="../web/engine/examples.js">web/engine/examples.js</a> <span>the example parts and the circuit shorthand</span></li>
+          <li><a href="../web/vehicle/world.js">web/vehicle/world.js</a> <span>sensors, differential drive and the track</span></li>
+          <li><a href="../web/ui/editor.js">web/ui/editor.js</a> <span>the board: placing, wiring, panning, zooming to fit, drawing live signals</span></li>
+          <li><a href="../web/ui/vehicleView.js">web/ui/vehicleView.js</a> <span>drawing the robot and its track</span></li>
+          <li><a href="../web/app.js">web/app.js</a> <span>the page: parts list, saving, import and export, test drive</span></li>
+          <li><a href="../tests/engine.test.mjs">tests/engine.test.mjs</a>, <a href="../tests/vehicle.test.mjs">tests/vehicle.test.mjs</a></li>
+        </ul>
+        <div class="next" style="margin-top:22px"><a class="btn primary" href="../">Back to PartForge</a><a class="btn" href="../../../#projects">All projects</a></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap"><p>© <span id="yr">2026</span> William Chang · <a href="../../../">Home</a></p></div>
+</footer>
+
+<script src="../../how-it-works.js"></script>
+</body>
+</html>

@@ -1,0 +1,899 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How Crease Lab works · William Chang</title>
+<meta name="description" content="The ideas behind Crease Lab, with the lines of code that carry them: a bar-and-hinge model of origami, folding by hand, CMA-ES design search, a Kresling crawler that moves by folding alone, and the step from simulated cables to servo angles.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230E1A2E'/%3E%3Cpath d='M5 22l5.5-12 5.5 12 5.5-12 5.5 12' fill='none' stroke='%237AA2FF' stroke-width='2.4' stroke-linejoin='round'/%3E%3Cpath d='M10.5 10l5.5 12' stroke='%23F2B84B' stroke-width='2.4'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../how-it-works.css">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="../../../">William Chang</a>
+    <span class="crumb"><i>/</i><a class="p" href="../../../#projects">Projects</a><i class="p">/</i><a href="../">Crease Lab</a></span>
+    <a class="backbtn" href="../"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg><span>Back to project</span></a>
+    <button class="theme" id="theme" aria-label="Switch light or dark theme">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="head">
+      <p class="kicker">How it works</p>
+      <h1>Crease Lab</h1>
+      <p class="lede">An origami robot is a folded sheet plus something that pulls on it. Crease Lab models the sheet as a truss of bars with springy hinges, lets you fold it by hand or let an optimizer pick its shape, teaches a folded tube to crawl with no wheels, and turns the result into a template and servo angles. <span>First time here? The <a href="#tutorial">tutorial</a> walks through every bench. After it come the nine ideas it rests on, each with the lines of JavaScript that carry it.</span></p>
+      <ul class="focus"><li>Physics simulation</li><li>Origami mechanics</li><li>Evolution strategies</li><li>Locomotion</li><li>Robot fabrication</li></ul>
+    </div>
+
+    <div class="glance">
+      <div>
+        <h2>From crease pattern to crawling robot</h2>
+        <ol class="flow">
+          <li><b>Draw</b><span>a crease pattern: points, triangles, mountain and valley lines</span></li>
+          <li><b>Fold</b><span>bars keep panels rigid; hinges pull creases toward their angle</span></li>
+          <li><b>Search</b><span>CMA-ES tries shapes and simulates each one</span></li>
+          <li><b>Crawl</b><span>cables and grippy feet, sequenced into a gait</span></li>
+          <li><b>Transform</b><span>a hinged neck turns the crawler into a periscope</span></li>
+          <li><b>Build</b><span>template, servo angles and Arduino code</span></li>
+          <li><b>Modules</b><span>one electric fold, three ways to power it, chained into a crawler</span></li>
+        </ol>
+      </div>
+      <div>
+        <h2>The ideas</h2>
+        <ol class="toc">
+          <li><a href="#tutorial"><em>▶</em>Tutorial: try every bench</a></li>
+          <li><a href="#truss"><em>01</em>A sheet is a truss with springy hinges</a></li>
+          <li><a href="#fold"><em>02</em>Folding is a torque on every crease</a></li>
+          <li><a href="#hand"><em>03</em>A hand, and paper that remembers</a></li>
+          <li><a href="#search"><em>04</em>Let the optimizer choose the shape</a></li>
+          <li><a href="#ground"><em>05</em>Crawling needs an asymmetry</a></li>
+          <li><a href="#gaits"><em>06</em>Gaits are timed primitives</a></li>
+          <li><a href="#servo"><em>07</em>From cable stroke to servo angle</a></li>
+          <li><a href="#transform"><em>08</em>One body, four shapes</a></li>
+          <li><a href="#stages"><em>09</em>Three stages to a real robot</a></li>
+          <li><a href="#modules"><em>10</em>One fold, three motors</a></li>
+          <li><a href="#results"><em>→</em>Results</a></li>
+          <li><a href="#limits"><em>→</em>Limits</a></li>
+          <li><a href="#reproduce"><em>→</em>Reproduce</a></li>
+          <li><a href="#code"><em>→</em>Read further</a></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <section class="block" id="tutorial">
+    <div class="wrap sec">
+      <header><span class="no">▶</span><h2>Tutorial</h2><p>Twenty-five minutes through Fold, Move, Transform and Build, one thing to try at a time, three stages to build it for real, then one electric fold and what copies of it can do</p></header>
+      <div>
+        <div class="prose">
+          <p>Open <a href="../">Crease Lab</a> in a second tab and keep this page beside it. The five buttons at the top, <span class="ui">Fold</span>, <span class="ui">Move</span>, <span class="ui">Transform</span>, <span class="ui">Build</span> and <span class="ui">Modules</span>, are five workbenches. Settings are on the left, the 3D view is in the middle, and results are on the right. In the 3D view, drag empty space to turn the camera and scroll to zoom. <span class="ui">Reset view</span> puts the camera back.</p>
+          <h3>Words you'll see</h3>
+        </div>
+        <div class="tablewrap"><table class="cases">
+          <tr><th>Word</th><th>Meaning</th></tr>
+          <tr><td><b>Crease pattern</b></td><td>The flat drawing of where the paper folds. It's shown on the green cutting mat.</td></tr>
+          <tr><td><b>Mountain / valley</b></td><td>The two ways a crease can fold. A mountain makes a ridge pointing at you (red, dash-dot). A valley makes a trough (blue, dashed).</td></tr>
+          <tr><td><b>Strain</b></td><td>How far the paper has to stretch to take a shape. Real paper barely stretches, so a design with high strain will tear or refuse to fold.</td></tr>
+          <tr><td><b>Kresling</b></td><td>A tube of triangles that twists as you squash it. The crawling robot is a row of them on its side.</td></tr>
+          <tr><td><b>Gait</b></td><td>A repeating sequence of moves (squeeze, let go, grip, bend) that makes the body travel.</td></tr>
+        </table></div>
+
+        <div class="prose"><h3>Fold: shapes from flat paper</h3></div>
+        <ol class="tut">
+          <li>
+            <h3>Collapse a Miura-ori</h3>
+            <p>In <span class="ui">Fold</span>, pick <b>Miura-ori</b> under Pattern. In <b>Actuation</b>, drag <b>Fold amount</b> from 0% up toward 90%, or tick <b>Cycle fold open and closed</b> and let it run.</p>
+            <p class="see"><b>You should see</b> the flat sheet buckle into a zigzag and pack down into a narrow stack. The whole sheet moves together: pull any part and the rest follows. That's why this pattern is used to fold solar panels for launch.</p>
+          </li>
+          <li>
+            <h3>Fold it with your hands</h3>
+            <p>Untick the cycle box. In the 3D view, double-click one corner of the paper to pin it, then drag the opposite corner. To make the paper keep the shape you give it, tick <b>Creases keep the shape you fold by hand</b> first.</p>
+            <p class="see"><b>You should see</b> the creases bend as you pull and the panels stay flat. Without the pin, the whole sheet just slides along with your mouse.</p>
+          </li>
+          <li>
+            <h3>Change a crease</h3>
+            <p>On the <b>Crease pattern</b> mat under the 3D view, click any red or blue line. In the panel that opens, switch it between <span class="ui">Mountain</span>, <span class="ui">Valley</span> and <span class="ui">Flat (no fold)</span>, or drag <b>Fold just this crease</b>. <span class="ui">Reset folds</span> undoes every change.</p>
+            <p class="see"><b>You should see</b> the 3D sheet fold differently straight away. Flip one Miura crease the wrong way and the sheet fights itself: it can't collapse cleanly any more. The next step measures how badly.</p>
+          </li>
+          <li>
+            <h3>See where the paper stretches</h3>
+            <p>Pick <b>Miura-ori</b>, press <span class="ui">Reset folds</span>, then press <span class="ui">Strain map</span> under the 3D view. Set <b>Fold amount</b> to about 60% and watch the <b>Max strain</b> number at the top of the 3D view. The colour bar runs from white (no stretch) to red (3% stretch).</p>
+            <p>Now click any one red or blue crease on the mat and switch it to the opposite type (Mountain to Valley, or the other way round).</p>
+            <p class="see"><b>You should see</b> the sheet stay mostly white or pale yellow at first, with Max strain around 1%. After the flip, patches turn orange and red and Max strain jumps to 3–5%. That one crease now disagrees with its neighbours, so the panels around it can't all stay flat and have to stretch. Real paper won't stretch that much, so it would crumple or refuse to fold. <span class="ui">Reset folds</span> puts it back.</p>
+          </li>
+          <li>
+            <h3>Let the computer pick the shape</h3>
+            <p>Back on Miura-ori, go to <b>Optimize the design</b>. Set <b>Goal</b> to <i>Fold most compactly</i> and press <span class="ui">Run search</span>. Each dot is one design it tried and simulated, and the line is the best so far. When it stops, press <span class="ui">Use best design</span>.</p>
+            <p class="see"><b>You should see</b> the Geometry sliders jump to new values and a sheet that packs smaller than the default. The search is CMA-ES, explained in <a href="#search">section 04</a>.</p>
+          </li>
+          <li>
+            <h3>Make a tower that snaps</h3>
+            <p>Pick <b>Kresling tower</b>. Now the Actuation control is a cable: drag <b>Tendon pull</b>, or press <span class="ui">Pulse tendon</span> for a quick tug. Then press <span class="ui">Run sweep</span> in <b>Characterize</b>.</p>
+            <p class="see"><b>You should see</b> the tower twist as it shortens. The sweep plots how hard it pushes back as it's squashed. If the curve dips below zero, the tower snaps shut and stays shut on its own (it's bistable). Try a different <b>Twist per cell</b> and run the sweep again.</p>
+          </li>
+        </ol>
+        <div class="prose">
+          <h3>Bring your own design</h3>
+          <p>Press <span class="ui">Open design…</span> (top right of the bench), or drop a file anywhere on the bench. It opens three kinds of crease pattern: a <b>.fold</b> file (Origami Simulator, Rabbit Ear, ORIPA's FOLD export), an ORIPA <b>.cp</b> file, or an <b>.svg</b> drawing with red lines for mountains, blue for valleys and black for the outer edge, the same colours Origami Simulator uses. Lines are split where they cross and the panels are found automatically, so a drawing made in Inkscape or Illustrator works as long as the lines meet. A pattern drawn at a large size (in pixels or millimetres) is scaled down to fit the bench. It appears as a new button under <b>Pattern</b>; raise <b>Fold</b> to fold it.</p>
+          <p><span class="ui">Save design</span> downloads one <b>.creaselab.json</b> file with everything on every tab: the pattern and any creases you changed, the crawler and its gait, the transformer, and the Build choices. Open it again later with <span class="ui">Open design…</span> to carry on where you left off.</p>
+        </div>
+
+        <div class="prose"><h3>Move: a robot with no wheels</h3></div>
+        <ol class="tut" style="counter-reset:t 6">
+          <li>
+            <h3>Watch it crawl</h3>
+            <p>Click <span class="ui">Move</span>. A Kresling tube lies on its side with four cables running through it. In <b>Gait</b>, leave <b>Start from</b> on <i>Inchworm</i>.</p>
+            <p class="see"><b>You should see</b> the body squeeze and relax over and over while it inches forward. The feet are <i>directional scales</i>: they slide forward easily but grip backward, like the hairs on a ski skin. So each squeeze pulls the tail up and each relax pushes the head on.</p>
+          </li>
+          <li>
+            <h3>Drive it yourself</h3>
+            <p>In <b>Motion primitives</b>, drag <b>Contract</b> to squeeze, then drag <b>Bend</b> and pick a <b>Bend toward</b> direction. The gait pauses while you do this. Press <span class="ui">Back to the gait</span> when you're done.</p>
+            <p class="see"><b>You should see</b> that Contract shortens the whole body, while Bend shortens one side so the body curls. Bending is how the robot steers.</p>
+          </li>
+          <li>
+            <h3>Take away the grip</h3>
+            <p>In <b>Feet</b>, choose <i>Plain paper</i>, then press <span class="ui">Score this gait</span>.</p>
+            <p class="see"><b>You should see</b> the body stretch and squeeze but go nowhere. The path chart is nearly a dot. With the same friction in every direction, the front and back slip equally and cancel out. Crawling needs something lopsided: scales, or anchors that grip on command (<i>Switchable anchors</i>, used by the <i>Two-anchor crawl</i> gait).</p>
+          </li>
+          <li>
+            <h3>Teach it a better gait</h3>
+            <p>Put Feet back on <i>Directional scales</i>. In <b>Learn a gait</b>, set Goal to <i>Crawl fastest</i> and press <span class="ui">Run search</span>. It tries many timings and squeeze amounts, crawling each one in the simulator. Then press <span class="ui">Use learned gait</span> and <span class="ui">Score this gait</span>.</p>
+            <p class="see"><b>You should see</b> the phases in the Gait card change and a longer line on the path chart. You can also edit a phase by hand, or press <span class="ui">Add phase</span>, and score it again.</p>
+          </li>
+        </ol>
+
+        <div class="prose"><h3>Transform: one robot, four shapes</h3></div>
+        <ol class="tut" style="counter-reset:t 10">
+          <li>
+            <h3>Switch body shapes</h3>
+            <p>Click <span class="ui">Transform</span>. This is the Move crawler with a hinged neck and a head cell, standing on a long battery sled under the shoulder. Under <b>Body shape</b>, press <span class="ui">Tower</span>, then <span class="ui">Compact</span>, then <span class="ui">Crawl</span>.</p>
+            <p class="see"><b>You should see</b> the tail and sled pads turn blue (gripping) and the head swing up until it points at the sky. The <b>Camera</b> number climbs from about 1.1 cm to nearly 3 cm. Compact squeezes the body to about half its length with the neck locked straight, and Crawl inches it along like the Move bench.</p>
+          </li>
+          <li>
+            <h3>Aim the head</h3>
+            <p>Press <span class="ui">Reach</span> and drag <b>Neck angle</b>.</p>
+            <p class="see"><b>You should see</b> the head follow the slider and hold where you leave it, because a servo is steering the neck tendons. The two short lines across the hinge are those tendons: the top one glows when it lifts, the bottom one when it lowers. Coming down from upright is slow (about 6 s), because near vertical the head's weight doesn't help.</p>
+          </li>
+          <li>
+            <h3>Run a mission and judge it</h3>
+            <p>Press <span class="ui">Run mission</span>. The robot starts folded, crawls, raises its camera, lowers its head to press a target, and folds up again. The table fills in step by step. Then read <b>Is transforming worth it?</b></p>
+            <p class="see"><b>You should see</b> the transformer win on camera height (about 2.4×) and on holding a tip off the floor, which a crawl-only robot can't do. It loses on crawl speed (about 84% as fast) and on how short it packs. Try a lighter battery or fewer body cells and run it again to see which numbers move.</p>
+          </li>
+        </ol>
+
+        <div class="prose"><h3>Build: the real thing, in three stages</h3></div>
+        <ol class="tut" style="counter-reset:t 13">
+          <li>
+            <h3>Stage 1: the crawler, tethered</h3>
+            <p>Click <span class="ui">Build</span> and keep <b>Robot to build</b> on <span class="ui">Crawler</span> and <b>Power</b> on <span class="ui">Tethered</span>. It builds the robot and gait you set up in Move. Flip between <span class="ui">Body strip</span>, <span class="ui">Plates</span>, <span class="ui">Trays</span> and <span class="ui">3D robot</span> in the middle, and read the <b>Weight check</b>, <b>Servo plan</b>, <b>Wiring</b>, <b>Parts</b>, <b>Controller code</b> and <b>Build steps</b> on the right. Press <span class="ui">Download build kit (.zip)</span>.</p>
+            <p class="see"><b>You should see</b> three A4 pages: the body strip (score, fold and glue it into a tube), the plates, and the trays that hold the servos and double as foot pads. The weight check says the two servos alone weigh about twice the paper body, and the simulator predicts the crawl slows to about two-thirds of the bare body's pace.</p>
+          </li>
+          <li>
+            <h3>Stage 2: let it carry its own battery</h3>
+            <p>Switch <b>Power</b> to <span class="ui">On board</span>. A 1S LiPo, a 5 V boost converter and the board move onto a tray under the head.</p>
+            <p class="see"><b>You should see</b> the weight rise to about 95 g and the predicted crawl drop a little more, to just over half of bare. The weight check also shows the same weight all on the tail would leave barely a quarter, which is why the battery rides at the head. Build Stage 1 first: Stage 2 reuses its servo zeros.</p>
+          </li>
+          <li>
+            <h3>Stage 3: the transformer</h3>
+            <p>Switch <b>Robot to build</b> to <span class="ui">Transformer</span>. It upgrades the Stage 2 robot: the battery moves to a sled under the last plate, a third servo becomes the neck hinge, and a card box with an optional camera becomes the head.</p>
+            <p class="see"><b>You should see</b> a fourth page (the head box), a servo plan for each shape, and a weight check that runs Tower, Reach, Compact and Crawl with every real part's weight in place. The camera rises from 33 mm to about 81 mm. The code takes <code>c</code>, <code>w</code>, <code>t</code> and <code>r</code> over the serial monitor, and a button on the sled runs the whole mission.</p>
+          </li>
+        </ol>
+        <div class="prose"><h3>Modules: one electric fold, then many</h3></div>
+        <ol class="tut" style="counter-reset:t 16">
+          <li>
+            <h3>Fold one module</h3>
+            <p>Click <span class="ui">Modules</span>. The middle shows one module from the side: two card panels and a crease, the left panel clamped to a table. <b>SMA wire</b> is selected. Press <span class="ui">Fold</span>, wait, then <span class="ui">Release</span>.</p>
+            <p class="see"><b>You should see</b> the wire turn red as it heats to about 100 °C and the panel swing up to about 80° in just over half a second. After you release it, nothing happens for a couple of seconds while the wire cools, then the band on the back pulls the fold open. The <b>Fold test</b> card plots exactly that: fold angle and wire temperature over time.</p>
+          </li>
+          <li>
+            <h3>Try the other two pullers</h3>
+            <p>Pick <b>Servo</b>, then <b>SMA spring</b>, and fold each. Then read <b>Servo or shape-memory?</b> on the right, which runs all three on the same hinge.</p>
+            <p class="see"><b>You should see</b> the servo close and open in about a second, but weigh 10 g a module; the wire and the spring weigh 0.4 g but take 4 to 6 s a cycle, most of it cooling. Now pick SMA wire again and drag <b>Return band preload</b> down to 0.5 N: the warning says it no longer opens, because a cold wire has to be stretched back out by something.</p>
+          </li>
+          <li>
+            <h3>Chain copies into a crawler</h3>
+            <p>Switch the view to <span class="ui">Crawler</span> and press <span class="ui">4×</span>. In the <b>Crawler</b> card, try <b>Modules</b> 1 to 6, the <span class="ui">Wave</span> and <span class="ui">Together</span> gaits, and <span class="ui">Plain</span> feet. Then <b>Build it</b>: pick <span class="ui">One module</span> or <span class="ui">The crawler</span> and press <span class="ui">Download kit (.zip)</span>.</p>
+            <p class="see"><b>You should see</b> three wire modules crawl about 50 mm a cycle (7.4 mm/s); the servo version goes three and a half times faster but weighs 14 times more. With plain feet it goes nowhere. The kit has the template, the parts, the wiring with one MOSFET and one current-limiting resistor per module, and code that never heats a wire for more than 10 s or before it has cooled.</p>
+          </li>
+        </ol>
+        <div class="callout">
+          <b>If something looks wrong</b>
+          <p><b>The sheet flew off or crumpled.</b> Press <span class="ui">Defaults</span> on Geometry, or pick the pattern again to rebuild it. Very low damping or stretch stiffness makes it wobbly.</p>
+          <p><b>Panels pass through each other.</b> The simulator has no collision between panels, so a sheet folded far enough, or pushed by hand, can fold straight through itself. Yoshimura does this early, because as a flat sheet it collapses fast. Real paper would stop where layers touch. Keep the fold amount lower if it bothers you.</p>
+          <p><b>I can't click the Kresling creases.</b> That's on purpose. The tower's folds come from its geometry, so the mat only shows the strip to cut out.</p>
+          <p><b>Nothing moves in Move.</b> Check that <span class="ui">Pause</span> isn't pressed, and press <span class="ui">Back to the gait</span> if you were driving it by hand.</p>
+        </div>
+        <div class="prose"><p>The numbered sections below explain what the simulator is doing behind each of those buttons.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="truss">
+    <div class="wrap sec">
+      <header><span class="no">01</span><h2>A sheet is a truss with springy hinges</h2><p>The bar-and-hinge model</p></header>
+      <div>
+        <div class="prose">
+          <p>Simulating paper as a continuous shell is slow and fussy. The bar-and-hinge model, used by MERLIN (Liu and Paulino) and Origami Simulator (Ghassaei, Demaine and Gershenfeld), keeps only what matters for folding. Every crease pattern is cut into triangles. Each triangle edge becomes a bar that resists stretching, and each edge shared by two triangles becomes a hinge with a rotational spring. Mountain and valley creases get soft hinges; the diagonals that split a flat panel get stiff ones, so the panel stays nearly flat.</p>
+          <p>Bars are linear springs with a damper along their own direction. The stiffness is <code>axial / L0</code>, so a short bar and a long bar of the same material stretch by the same fraction under the same load.</p>
+        </div>
+<figure class="code" data-src="../web/core.js" data-start="414"><figcaption><a href="../web/core.js">web/core.js</a><span>lines 414–423</span></figcaption><pre data-lang="js" data-mark="420-422"><code>      for (const b of this.allBars) {
+        const i = 3 * b.i, j = 3 * b.j;
+        const dx = x[j] - x[i], dy = x[j + 1] - x[i + 1], dz = x[j + 2] - x[i + 2];
+        const L = Math.sqrt(dx * dx + dy * dy + dz * dz) || 1e-12;
+        const ux = dx / L, uy = dy / L, uz = dz / L;
+        const rv = (v[j] - v[i]) * ux + (v[j + 1] - v[i + 1]) * uy + (v[j + 2] - v[i + 2]) * uz;
+        const fs = b.k * (L - b.L0) + b.c * rv;
+        f[i] += fs * ux; f[i + 1] += fs * uy; f[i + 2] += fs * uz;
+        f[j] -= fs * ux; f[j + 1] -= fs * uy; f[j + 2] -= fs * uz;
+      }</code></pre></figure>
+        <ol class="notes">
+          <li data-line="417-419">The bar's unit direction and how fast its two ends move apart along it.</li>
+          <li data-line="420">Spring plus damper: <code>k(L − L0)</code> pulls the bar back to its rest length and <code>c·v</code> bleeds off oscillation. The damping ratio is 0.45 of critical.</li>
+          <li data-line="421-422">Equal and opposite forces on the two ends, so bars never push the sheet as a whole.</li>
+        </ol>
+        <div class="prose">
+          <p>The hinge needs the fold angle between its two triangles and how that angle changes when any of the four corners moves. The angle comes from the two face normals; the gradient is the closed form from Liu and Paulino (2017). Valley folds are positive, as in the FOLD file format. A test in development compared this gradient with finite differences and they agreed to 10<sup>−10</sup>.</p>
+        </div>
+<figure class="code" data-src="../web/core.js" data-start="389"><figcaption><a href="../web/core.js">web/core.js</a><span>lines 389–408</span></figcaption><pre data-lang="js" data-mark="391,400-401"><code>      const sinT = (cxm * rkjx + cym * rkjy + czm * rkjz) * im * inn / L;
+      const cosT = -(mx * nx + my * ny + mz * nz) * im * inn;
+      let th = Math.atan2(sinT, cosT);
+      // unwrap
+      const d = th - h.theta;
+      if (d &gt; PI) th -= 2 * PI; else if (d &lt; -PI) th += 2 * PI;
+      if (grad) {
+        // Liu &amp; Paulino (2017) dihedral gradient; sign matched to `th`
+        const a1 = (rijx * rkjx + rijy * rkjy + rijz * rkjz) / LL;
+        const a2 = (rklx * rkjx + rkly * rkjy + rklz * rkjz) / LL;
+        const s = -1;
+        const gi = [s * L / mm * mx, s * L / mm * my, s * L / mm * mz];
+        const gl = [-s * L / nn * nx, -s * L / nn * ny, -s * L / nn * nz];
+        grad[0] = gi[0]; grad[1] = gi[1]; grad[2] = gi[2];
+        grad[3] = gl[0]; grad[4] = gl[1]; grad[5] = gl[2];
+        for (let c = 0; c &lt; 3; c++) {
+          grad[6 + c] = (a1 - 1) * gi[c] - a2 * gl[c];
+          grad[9 + c] = (a2 - 1) * gl[c] - a1 * gi[c];
+        }
+      }</code></pre></figure>
+        <ol class="notes">
+          <li data-line="389-391">Signed angle from the two face normals <code>m</code> and <code>n</code>, measured about the hinge axis: 0 when flat, +180° folded fully as a valley.</li>
+          <li data-line="393-394">Unwrap against the previous angle, so a crease folded past 180° does not suddenly jump to −180°.</li>
+          <li data-line="400-401">Moving a wing corner straight off the hinge changes the angle at a rate of 1 / (its distance from the hinge), along the face normal.</li>
+          <li data-line="404-406">The two hinge corners take the rest, weighted by where the wings sit along the hinge, so the four gradients sum to zero and the hinge never pushes the sheet as a whole.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="fold">
+    <div class="wrap sec">
+      <header><span class="no">02</span><h2>Folding is a torque on every crease</h2><p>Targets, not positions</p></header>
+      <div>
+        <div class="prose">
+          <p>Nothing in the model says where the paper should end up. Each hinge only has a target angle, and its spring pulls toward that target. The fold slider sets every valley's target to +180° × the fold amount and every mountain's to −180° × the fold amount, the same trick Origami Simulator uses. The bars then decide what shape is possible.</p>
+        </div>
+<figure class="code" data-src="../web/core.js" data-start="365"><figcaption><a href="../web/core.js">web/core.js</a><span>lines 365–374</span></figcaption><pre data-lang="js" data-mark="370-371"><code>    setFold(p) {
+      // drive M/V creases toward +/- pi * p (valley positive, FOLD convention)
+      this.foldPct = p;
+      const mf = this.opts.maxFold * PI;
+      for (const h of this.hinges) {
+        if (h.asg === 'V') h.target = h.rest + p * (mf - h.rest);
+        else if (h.asg === 'M') h.target = h.rest + p * (-mf - h.rest);
+        else h.target = h.rest;
+      }
+    }</code></pre></figure>
+        <ol class="notes">
+          <li data-line="370-371">A valley heads for +π·p, a mountain for −π·p. <code>rest</code> is 0 for a flat sheet; for the Kresling tower it is the angle of the built tower, so the tower is stress-free as built.</li>
+          <li data-line="372">Flat panel lines aim to stay flat.</li>
+        </ol>
+        <div class="prose">
+          <p>The hinge force is the torque <code>−k(θ − θtarget)</code> times the gradient from 01, applied to all four corners. The model steps forward in time with semi-implicit Euler, using a time step set from the stiffest node so it stays stable.</p>
+        </div>
+<figure class="code" data-src="../web/core.js" data-start="425"><figcaption><a href="../web/core.js">web/core.js</a><span>lines 425–434</span></figcaption><pre data-lang="js" data-mark="428-433"><code>      for (const h of this.hinges) {
+        const th = this.hingeAngle(h, g);
+        h.theta = th;
+        const tq = -h.k * (th - h.target);
+        const ids = [h.w1, h.w2, h.h1, h.h2];
+        for (let q = 0; q &lt; 4; q++) {
+          const n = 3 * ids[q];
+          f[n] += tq * g[3 * q]; f[n + 1] += tq * g[3 * q + 1]; f[n + 2] += tq * g[3 * q + 2];
+        }
+      }</code></pre></figure>
+        <ol class="notes">
+          <li data-line="428">Torque from the rotational spring. <code>h.k</code> is the crease stiffness times the crease length, so long creases are proportionally stiffer.</li>
+          <li data-line="429-432">The same torque times each corner's gradient. This is exactly the force that lowers the spring's energy fastest.</li>
+        </ol>
+        <div class="callout"><b>A side effect worth knowing</b><p>Asking every crease for the same angle is not quite what a Miura-ori wants: its zigzag creases and straight creases fold at different rates. The creases fight a little, and panels stretch by about 1.3% midway through the fold, then relax as it closes. A real Miura folds with no stretch at all, so read the strain map as "how hard the creases disagree", not as tearing.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="hand">
+    <div class="wrap sec">
+      <header><span class="no">03</span><h2>A hand, and paper that remembers</h2><p>Direct manipulation in 3D</p></header>
+      <div>
+        <div class="prose">
+          <p>Dragging the paper casts a ray from the mouse into the scene, finds the triangle it hits and the exact point on it, and attaches a spring from that point to the cursor. The point is a weighted mix of the triangle's three corners, so you can grab the middle of a panel, not just a corner. Double-clicking pins a corner in place, which is what you need to fold one half of a sheet over the other.</p>
+        </div>
+<figure class="code" data-src="../web/core.js" data-start="442"><figcaption><a href="../web/core.js">web/core.js</a><span>lines 442–460</span></figcaption><pre data-lang="js" data-mark="449,452-454,458-459"><code>      if (this.grab) {
+        const g = this.grab, k = g.k || 25, c = 2 * Math.sqrt(k);
+        const nodes = g.nodes || [g.node], w = g.w || [1];
+        for (let d = 0; d &lt; 3; d++) {
+          let pd = 0, vd = 0;
+          for (let q = 0; q &lt; nodes.length; q++) { pd += w[q] * x[3 * nodes[q] + d]; vd += w[q] * v[3 * nodes[q] + d]; }
+          g._F = g._F || [0, 0, 0];
+          g._F[d] = k * (g.target[d] - pd) - c * vd;
+        }
+        // a hand, not a vice: cap the pull so panels do not get torn apart
+        const Fm = Math.hypot(g._F[0], g._F[1], g._F[2]), cap = g.maxForce || 2;
+        const sc = Fm &gt; cap ? cap / Fm : 1;
+        for (let d = 0; d &lt; 3; d++) for (let q = 0; q &lt; nodes.length; q++) f[3 * nodes[q] + d] += w[q] * g._F[d] * sc;
+      }
+    }
+    // paper memory: creases keep the angle they were bent to
+    setCreasesToCurrent() {
+      for (const h of this.hinges) if (h.asg === 'M' || h.asg === 'V') h.target = h.theta;
+    }</code></pre></figure>
+        <ol class="notes">
+          <li data-line="445-449">A spring and damper between the grabbed point and the cursor. Velocities are mixed with the same barycentric weights as positions.</li>
+          <li data-line="452-454">A hand, not a vice: the pull is capped. Without the cap, dragging fast stretches the bars by 10% or more and the sheet looks torn.</li>
+          <li data-line="458-459">Letting go copies each crease's current angle into its target, so the fold stays where you left it, like creased paper. You can switch this off on the page.</li>
+        </ol>
+        <div class="prose">
+          <p>Clicking a crease on the cutting mat selects it. You can flip it between mountain, valley and flat, or hold just that crease at an angle while everything else follows the fold slider.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="search">
+    <div class="wrap sec">
+      <header><span class="no">04</span><h2>Let the optimizer choose the shape</h2><p>CMA-ES on simulated designs</p></header>
+      <div>
+        <div class="prose">
+          <p>Each pattern has a few continuous dimensions (panel width, zigzag length and sector angle for the Miura; cell height and twist for the Kresling). The optimizer works in a unit box over those, decodes a point into a design, builds it, folds or squeezes it to equilibrium, and scores it. There is no gradient through the simulator, so it uses CMA-ES, which only needs scores.</p>
+        </div>
+<figure class="code" data-src="../web/core.js" data-start="831"><figcaption><a href="../web/core.js">web/core.js</a><span>lines 831–844</span></figcaption><pre data-lang="js" data-mark="836-838,842"><code>    const evaluate = (u) =&gt; {
+      const p = decode(u);
+      let pen = 0; for (const v of u) pen += Math.max(0, -v) + Math.max(0, v - 1);
+      let r;
+      try {
+        const sim = buildMesh(buildPattern(key, p), stiff);
+        sim.damping = 2;
+        r = obj.eval(sim, ctx);
+        r.sim = sim;
+        if (!isFinite(r.score)) r.score = -10;
+      } catch (e) { r = { score: -10, info: { error: String(e) } }; }
+      r.params = p; r.fitness = -r.score + 5 * pen;
+      return r;
+    };</code></pre></figure>
+        <ol class="notes">
+          <li data-line="836-838">Every candidate is a fresh simulation, run until the kinetic energy has settled. That is about 11 to 13 ms each on a laptop, so 12 generations take about a second.</li>
+          <li data-line="842">CMA-ES minimises, so fitness is minus the score, plus a penalty for stepping outside the box (the design itself is clamped back inside).</li>
+        </ol>
+        <div class="prose">
+          <p>The goals are deliberately physical. For sheets: fold to the smallest footprint with a penalty for stretched panels, or fold with the least stretch. For the Kresling tower: the longest stroke for a given pull, or the strongest second stable state, which the page measures by pushing the lid down step by step and recording the force (a dip below zero means the tower snaps shut and stays there).</p>
+        </div>
+<figure class="code" data-src="../web/core.js" data-start="673"><figcaption><a href="../web/core.js">web/core.js</a><span>lines 673–700</span></figcaption><pre data-lang="js" data-mark="678,686,697,699"><code>    tell(xs, fs) {
+      const N = this.N, idx = fs.map((f, i) =&gt; i).sort((a, b) =&gt; fs[a] - fs[b]);
+      if (fs[idx[0]] &lt; this.best.f) this.best = { x: xs[idx[0]].slice(), f: fs[idx[0]] };
+      const old = this.mean.slice();
+      this.mean = new Array(N).fill(0);
+      for (let k = 0; k &lt; this.mu; k++) for (let i = 0; i &lt; N; i++) this.mean[i] += this.w[k] * xs[idx[k]][i];
+      const dm = this.mean.map((m, i) =&gt; (m - old[i]) / this.sigma);
+      // C^{-1/2} dm
+      const t = new Array(N).fill(0);
+      for (let j = 0; j &lt; N; j++) { let s = 0; for (let i = 0; i &lt; N; i++) s += this.B[i][j] * dm[i]; t[j] = s / this.D[j]; }
+      const ic = new Array(N).fill(0);
+      for (let i = 0; i &lt; N; i++) for (let j = 0; j &lt; N; j++) ic[i] += this.B[i][j] * t[j];
+      const cs = this.cs, cc = this.cc, me = this.mueff;
+      for (let i = 0; i &lt; N; i++) this.ps[i] = (1 - cs) * this.ps[i] + Math.sqrt(cs * (2 - cs) * me) * ic[i];
+      const psn = Math.hypot(...this.ps);
+      const hsig = psn / Math.sqrt(1 - (1 - cs) ** (2 * (this.gen + 1))) / this.chiN &lt; 1.4 + 2 / (N + 1) ? 1 : 0;
+      for (let i = 0; i &lt; N; i++) this.pc[i] = (1 - cc) * this.pc[i] + hsig * Math.sqrt(cc * (2 - cc) * me) * dm[i];
+      const c1 = this.c1, cmu = this.cmu;
+      for (let i = 0; i &lt; N; i++) for (let j = 0; j &lt; N; j++) {
+        let rmu = 0;
+        for (let k = 0; k &lt; this.mu; k++) {
+          const xi = (xs[idx[k]][i] - old[i]) / this.sigma, xj = (xs[idx[k]][j] - old[j]) / this.sigma;
+          rmu += this.w[k] * xi * xj;
+        }
+        this.C[i][j] = (1 - c1 - cmu) * this.C[i][j] + c1 * (this.pc[i] * this.pc[j] + (1 - hsig) * cc * (2 - cc) * this.C[i][j]) + cmu * rmu;
+      }
+      this.sigma *= Math.exp((cs / this.damps) * (psn / this.chiN - 1));
+      this.sigma = Math.min(this.sigma, 1);</code></pre></figure>
+        <ol class="notes">
+          <li data-line="678">The new mean is a weighted average of the best half of the candidates.</li>
+          <li data-line="686">The evolution path for the step size: how consistently the mean has been moving.</li>
+          <li data-line="697">The covariance learns the shape of good directions, from the long-run path (rank one) and this generation's winners (rank μ).</li>
+          <li data-line="699">Steps grow when progress is consistent and shrink when it is random. This is Hansen's standard update, written out for small dimensions with a Jacobi eigensolver.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="ground">
+    <div class="wrap sec">
+      <header><span class="no">05</span><h2>Crawling needs an asymmetry</h2><p>Gravity, a floor, friction and cables</p></header>
+      <div>
+        <div class="prose">
+          <p>The robot is a Kresling tube lying on its side: rigid plates between the cells, a foot pad under each end plate, and four cables running the whole length through an eyelet in every plate. Cables are internal forces, so pulling them can never move the robot's centre of mass. Only the ground can. That is the whole problem of locomotion without wheels: a body that stretches and shrinks symmetrically on uniform friction goes nowhere, and the page's "plain paper" gait shows exactly 0% progress per cycle.</p>
+          <p>Something has to be asymmetric. With directional feet (like the hairs on a climbing skin), the contacts slide forward easily and grip backwards. With switchable anchors, the robot chooses which end grips in each phase.</p>
+        </div>
+<figure class="code" data-src="../web/motion.js" data-start="246"><figcaption><a href="../web/motion.js">web/motion.js</a><span>lines 246–258</span></figcaption><pre data-lang="js" data-mark="253-256"><code>        // Coulomb friction as a velocity-level impulse, split along / across the body axis
+        const ax = this.axisVector(); let hx = ax.dx, hy = ax.dy; const hl = Math.hypot(hx, hy) || 1; hx /= hl; hy /= hl;
+        const lx = -hy, ly = hx;
+        for (let i = 0; i &lt; N; i++) {
+          const nrm = this.normal[i]; if (!nrm) continue;
+          const p = 3 * i;
+          let va = v[p] * hx + v[p + 1] * hy, vl = v[p] * lx + v[p + 1] * ly;
+          const mua = va &gt; 0 ? this.muF[i] : this.muB[i];
+          const da = mua * nrm * dt, dl = this.muS[i] * nrm * dt;
+          va = Math.abs(va) &lt;= da ? 0 : va - Math.sign(va) * da;
+          vl = Math.abs(vl) &lt;= dl ? 0 : vl - Math.sign(vl) * dl;
+          v[p] = va * hx + vl * lx; v[p + 1] = va * hy + vl * ly;
+        }</code></pre></figure>
+        <ol class="notes">
+          <li data-line="252-253">Each contact's velocity is split into a part along the body and a part across it. Directional feet use a low coefficient forwards (0.12) and a high one backwards (1.2).</li>
+          <li data-line="254-256">Coulomb friction as an impulse: friction removes at most μ·N·dt of sliding speed per step and never reverses it. So a foot either sticks completely or slides, and the step stays stable even with an anchor's μ of 40.</li>
+        </ol>
+        <div class="prose">
+          <p>A cable through eyelets pulls each pair of neighbouring eyelets together with its tension. The eyelets sit on the plates, between the corners and the centre, so the pull goes into the plates rather than straight along a crease, where a stiff bar would simply absorb it.</p>
+        </div>
+<figure class="code" data-src="../web/motion.js" data-start="213"><figcaption><a href="../web/motion.js">web/motion.js</a><span>lines 213–229</span></figcaption><pre data-lang="js" data-mark="221-226"><code>      // cables through eyelets: each straight run pulls its two ends together
+      const cab = this.mesh.pat.cables;
+      for (let c = 0; c &lt; cab.length; c++) {
+        const T = this.cableT[c]; if (!T) continue;
+        const eyes = cab[c].eyes;
+        let pa = this.eyelet(eyes[0]);
+        for (let q = 1; q &lt; eyes.length; q++) {
+          const pb = this.eyelet(eyes[q]);
+          const dx = pb[0] - pa[0], dy = pb[1] - pa[1], dz = pb[2] - pa[2];
+          const L = Math.hypot(dx, dy, dz) || 1e-9;
+          const fx = (T * dx) / L, fy = (T * dy) / L, fz = (T * dz) / L;
+          const A = eyes[q - 1], B = eyes[q];
+          for (let r = 0; r &lt; A.nodes.length; r++) { const i = 3 * A.nodes[r], w = A.w[r]; f[i] += w * fx; f[i + 1] += w * fy; f[i + 2] += w * fz; }
+          for (let r = 0; r &lt; B.nodes.length; r++) { const i = 3 * B.nodes[r], w = B.w[r]; f[i] -= w * fx; f[i + 1] -= w * fy; f[i + 2] -= w * fz; }
+          pa = pb;
+        }
+      }</code></pre></figure>
+        <ol class="notes">
+          <li data-line="221-223">Tension along the straight run between two eyelets.</li>
+          <li data-line="225-226">Each eyelet is a fixed weighted mix of its plate's corners, so the force is shared among them with the same weights.</li>
+        </ol>
+        <div class="callout"><b>What it took to get this right</b><p>The first version routed cables along the tube's own creases, and pulling them did almost nothing. The next let the end plates rest on their corners, and a one-sided pull just tipped them over. The model only behaved once each plate was made a thick rigid disc (two hub points just off its plane), each end got a foot pad with four contact points, and gravity was heavy enough to keep the pads down.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="gaits">
+    <div class="wrap sec">
+      <header><span class="no">06</span><h2>Gaits are timed primitives</h2><p>Contract, bend, twist, anchor, release</p></header>
+      <div>
+        <div class="prose">
+          <p>A gait is a short list of phases. Each phase sets a cable pattern and which feet grip. Contract pulls all four cables; bend adds extra pull on one side; twist comes for free when every cell has the same handedness; release just lets the creases spring the body back. Between phases the tensions ease over a third of a second, like a servo moving.</p>
+        </div>
+<figure class="code" data-src="../web/motion.js" data-start="335"><figcaption><a href="../web/motion.js">web/motion.js</a><span>lines 335–358</span></figcaption><pre data-lang="js" data-mark="336,351-355"><code>  function cablePattern(sim, ph, Tmax) {
+    return sim.cableAngle.map((a) =&gt; Tmax * Math.max(0, ph.contract + ph.bend * Math.cos(a - ph.dir * DEG)));
+  }
+
+  class GaitPlayer {
+    constructor(gait) { this.gait = gait; this.t = 0; this.prev = null; this.idx = -1; }
+    period() { return this.gait.phases.reduce((s, p) =&gt; s + p.dur, 0); }
+    phaseAt(t) {
+      const P = this.period(); let u = ((t % P) + P) % P;
+      for (let i = 0; i &lt; this.gait.phases.length; i++) { const d = this.gait.phases[i].dur; if (u &lt; d) return { i, u, d }; u -= d; }
+      return { i: this.gait.phases.length - 1, u: 0, d: 1 };
+    }
+    apply(sim, t) {
+      const g = this.gait, ph = this.phaseAt(t), cur = g.phases[ph.i];
+      const prev = g.phases[(ph.i - 1 + g.phases.length) % g.phases.length];
+      const Tmax = (g.tension || 1) * sim.tensionScale;
+      const a = cablePattern(sim, prev, Tmax), b = cablePattern(sim, cur, Tmax);
+      const ramp = Math.min(0.5, 0.35 * ph.d), w = Math.min(1, ph.u / ramp);
+      const s = w * w * (3 - 2 * w);
+      for (let c = 0; c &lt; a.length; c++) sim.cableT[c] = a[c] + (b[c] - a[c]) * s;
+      if (g.feet !== sim.feet || ph.i !== this.idx) sim.setFeet(g.feet, { front: cur.front || false, rear: cur.rear || false });
+      this.idx = ph.i;
+      return ph;
+    }</code></pre></figure>
+        <ol class="notes">
+          <li data-line="336">Cable tension is a contraction everyone shares plus a cosine-shaped extra pull toward the bend direction.</li>
+          <li data-line="351-354">A smoothstep blend from the previous phase's tensions to this phase's.</li>
+          <li data-line="355">Anchors switch at the start of a phase, all at once.</li>
+        </ol>
+        <div class="prose">
+          <p>The same CMA-ES from 04 can tune a gait: it keeps the order of phases and their anchors, and searches each phase's duration, contraction and bend. Every candidate is crawled for three cycles (one warm-up, two scored), about 20 ms each.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="servo">
+    <div class="wrap sec">
+      <header><span class="no">07</span><h2>From cable stroke to servo angle</h2><p>What a real robot needs from the simulator</p></header>
+      <div>
+        <div class="prose">
+          <p>Hobby servos hold an angle, not a force. So the one number the build needs from the simulator is how far each cable pair has to shorten in each phase. The Build tab pulls each phase's cable pattern until the body settles, measures the cable paths, scales them to the chosen size and divides by the spool radius.</p>
+        </div>
+<figure class="code" data-src="../web/build.js" data-start="209"><figcaption><a href="../web/build.js">web/build.js</a><span>lines 209–229</span></figcaption><pre data-lang="js" data-mark="218-219,223,227"><code>  function servoPlan(params, gait, opts) {
+    opts = Object.assign({ R_mm: 30, spool_mm: 10, servoRange: 180, stiff: null }, opts || {});
+    const phases = gait.phases.map((ph) =&gt; {
+      const sim = CL.buildRobot(params, opts.stiff);
+      sim.tensionScale = CL.tensionScaleFor(sim);
+      const Tmax = (gait.tension || 1) * sim.tensionScale;
+      sim.cableAngle.forEach((a, c) =&gt; { sim.cableT[c] = Tmax * Math.max(0, ph.contract + ph.bend * Math.cos(a - ph.dir * DEG)); });
+      sim.setFeet('plain');
+      sim.step(Math.round(4 / sim.dt));
+      const short = sim.mesh.pat.cables.map((c, i) =&gt; Math.max(0, sim.cableRest[i] - sim.pathLength(c)));
+      const leftMm = ((short[0] + short[3]) / 2) * opts.R_mm, rightMm = ((short[1] + short[2]) / 2) * opts.R_mm;
+      return { dur: ph.dur, leftMm, rightMm, head: ph.front || false, tail: ph.rear || false };
+    });
+    const maxMm = Math.max(1e-6, ...phases.map((p) =&gt; Math.max(p.leftMm, p.rightMm)));
+    const deg = (mm) =&gt; (mm / opts.spool_mm) / DEG;
+    for (const p of phases) { p.leftDeg = deg(p.leftMm); p.rightDeg = deg(p.rightMm); }
+    const maxDeg = deg(maxMm);
+    const usable = opts.servoRange * 0.85;
+    const spoolNeeded = maxMm / (usable * DEG);
+    return { phases, maxMm, maxDeg, fits: maxDeg &lt;= usable, spoolNeeded, spool_mm: opts.spool_mm, R_mm: opts.R_mm, anchors: gait.feet === 'anchors', feet: gait.feet };
+  }</code></pre></figure>
+        <ol class="notes">
+          <li data-line="218-219">Shortening of each cable, averaged into a left pair and a right pair (one servo each), in millimetres at the chosen plate size.</li>
+          <li data-line="223">Arc length to angle: θ = stroke / spool radius.</li>
+          <li data-line="227">The spool that keeps the largest stroke inside 85% of a 180° servo. For the default robot at 30 mm that is a 22 mm radius: the 59 mm stroke becomes 150°.</li>
+        </ol>
+        <div class="prose">
+          <p>The same tab draws the fold template at true scale (the flat strip comes from unrolling the tower's triangles, whose three side lengths fix the strip's slant), the plates with their eyelet holes, a wiring diagram and parts list, and an Arduino sketch whose phase table holds these angles and timings. Everything downloads as one zip.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="transform">
+    <div class="wrap sec">
+      <header><span class="no">08</span><h2>One body, four shapes</h2><p>The Transform bench</p></header>
+      <div>
+        <div class="prose">
+          <p>The idea behind the bench: the selling point of an origami robot may not be that it beats a specialised robot at one job, but that one compact body can change between a few useful shapes. The target here is the four-mode inspection robot from a concept brief on reconfigurable origami robots. <b>Compact</b> stows it, <b>Crawl</b> moves it, <b>Tower</b> lifts a camera, and <b>Reach</b> holds a tip on a target. The brief's test is that every change of shape should unlock something a fixed-form robot can't do nearly as well, so the bench measures that too.</p>
+          <h3>A Kresling tube won't bend</h3>
+          <p>The obvious first try was to make the Move crawler curl. Pull only the top cables to lift its head, or only one side's to swing it. It doesn't work, and the reason is geometric. Every plate is a rigid ring, and every panel between two rings is a triangle of fixed-length bars. Tilting one ring against the next would stretch some of those bars, but twisting and shortening stretches none. So a one-sided pull just shortens the whole body. With twice the usual pull it shrank to 34% of its length while the head moved 0.1 cm sideways. Making only the end plates rigid, or softening the panels until they strained 10%, changed nothing. The tube is a good contractor and a poor bender.</p>
+          <p>Real cable-driven origami arms bend because their panels give a little, or because the robot is built from modules joined by real hinges. The bench takes the second route. It keeps Kresling cells for the body, which only has to shorten, and adds one hinged neck module between the body and a single Kresling head cell.</p>
+        </div>
+<figure class="code" data-src="../web/transform.js" data-start="64"><figcaption><a href="../web/transform.js">web/transform.js</a><span>lines 64–73</span></figcaption><pre data-lang="js" data-mark="71-72"><code>    // the hinge: two pins on a horizontal axis, each braced rigidly to both plates, so the plates share
+    // exactly one axis and can only pitch about it. Two short tendons (top and bottom) turn it.
+    const joints = [];
+    for (let k = 0; k &lt; L; k++) {
+      if (mods[k] !== 'p') continue;
+      const xm = (xs[k] + xs[k + 1]) / 2, pins = [];
+      for (const s of [1, -1]) {
+        const i = pos3d.length; pos3d.push([xm, s * 0.95 * R, 0]); pins.push(i);
+        for (const r of rings[k].concat(hubs[k], rings[k + 1], hubs[k + 1])) extraBars.push([i, r]);
+      }</code></pre></figure>
+        <ol class="notes">
+          <li data-line="71-72">Each pin is braced to every corner and hub of both plates, so each plate is rigidly fixed to both pins. Two shared points leave exactly one free motion: rotation about the line through them. The frame bars are eight times stiffer than the paper's, because a hinge is plastic. At paper stiffness the pins spread from 1.9 to 2.55 apart under load and the hinge went floppy.</li>
+        </ol>
+        <div class="prose">
+          <p>The hinge needed three more fixes before it lifted anything, and each one is a real design rule. First, the body cables run the full length, and pulling them to work the hinge mostly crushed the Kresling cells on either side. So the neck has its own pair of short tendons, the way a servo would sit at an elbow. Second, the hinge had nothing under it. Closing its top made a V, and the joint sank to the floor while both halves tilted 40°. A long sled under the shoulder plate fixed that. Third, the reaction to lifting the head tipped the shoulder back 61° over a short pad, even with weight added. The answer was the same sled made long (±1.5 cell lengths) with the battery on it, and no weight on the invisible construction points (hubs and pins), so the head weighs what a camera module would.</p>
+          <p>The neck angle is held by a PID servo that pulls the top tendon to raise the head and the bottom one to lower it. In Compact and Crawl, both tendons stay snug so the hinge is locked straight.</p>
+        </div>
+<figure class="code" data-src="../web/transform.js" data-start="300"><figcaption><a href="../web/transform.js">web/transform.js</a><span>lines 300–310</span></figcaption><pre data-lang="js" data-mark="304-305,307-309"><code>      // neck servo
+      const th = s.neckAngle(), w = (th - this.lastAngle) / dt; this.lastAngle = th;
+      const e = this.neckTarget - th;
+      this.I = Math.max(-40, Math.min(40, this.I + e * dt));
+      const hold = 6 * Math.cos(Math.max(0, th) * DEG); // feed-forward against the head's weight
+      const u = 0.45 * e - 0.08 * w + 0.6 * this.I + (this.neckTarget &gt; 2 ? hold : 0);
+      const LOCK = 3, MAX = 24;
+      s.jointT[0] = this.neckTarget &lt;= 2 &amp;&amp; Math.abs(th) &lt; 6
+        ? [LOCK, LOCK] // straight: both tendons snug, so the hinge is locked
+        : [Math.max(0, Math.min(MAX, u)), Math.max(0, Math.min(MAX, -u))];
+    }</code></pre></figure>
+        <ol class="notes">
+          <li data-line="304-305">Proportional, derivative and integral terms on the hinge angle, plus a feed-forward term that holds up the head's weight. The weight's pull is largest when the head lies flat and vanishes when it stands upright, hence the cosine.</li>
+          <li data-line="307-309">One signed command becomes two tendon tensions, because a tendon can only pull. In Compact and Crawl the target is 0°, so both tendons are held at 3, which locks the hinge.</li>
+        </ol>
+        <div class="prose">
+          <h3>What each shape does</h3>
+          <p>Default robot: four body cells, 50° twist, battery 6× a cell. Each shape was held for 8 s, or four gait cycles for Crawl, starting from rest. Lengths are in cm, taking a cell as 1 cm long.</p>
+        </div>
+        <div class="tablewrap"><table class="cases">
+          <tr><th>Shape</th><th>Job</th><th>Result</th></tr>
+          <tr><td><b>Compact</b></td><td>Stow</td><td>49% of full length. The four body cells collapse, but the hinge and the head cell don't fold.</td></tr>
+          <tr><td><b>Crawl</b></td><td>Move</td><td>0.79 cm per cycle from a fully relaxed start (four cycles). 0.56 in the mission, which starts crawling before the body has fully sprung back from Compact.</td></tr>
+          <tr><td><b>Tower</b></td><td>Inspect</td><td>Neck 89°. The camera rises from 1.11 to 2.78 cm, with 2.8% peak panel strain.</td></tr>
+          <tr><td><b>Reach</b></td><td>Intervene</td><td>Holds the angle you set: 19° for 20°, 38° for 40°. Coming down from upright takes about 6 s, because near vertical the head's weight gives the bottom tendon no help.</td></tr>
+        </table></div>
+        <div class="prose">
+          <p>Battery weight matters less than expected once the sled is long. Tower reaches 86° even with the lightest battery (2×), with the shoulder tipping back 4°, and it stays level from 4× up. More body cells stow shorter but crawl no faster: 44% stowed with 3 cells, 37% with 5.</p>
+          <h3>Is transforming worth it?</h3>
+          <p>The mission runs the brief's five steps in order: Deploy (from Compact), Move (four inchworm cycles), Inspect (Tower), Intervene (Reach at 45°) and Recover (Compact). The baseline is the plain Move crawler with the same five Kresling cells and no neck, given the same pull.</p>
+        </div>
+        <div class="tablewrap"><table class="cases">
+          <tr><th>Job</th><th>Transformer</th><th>Fixed-form crawler</th></tr>
+          <tr><td>Camera height (Inspect)</td><td class="m on">2.67 cm</td><td class="m">1.10 cm</td></tr>
+          <tr><td>Tip held off the floor (Intervene)</td><td class="m on">2.42 cm</td><td class="m">floor only</td></tr>
+          <tr><td>Crawl speed (Move)</td><td class="m">0.56 cm/cycle</td><td class="m on">0.67 cm/cycle</td></tr>
+          <tr><td>Stowed length (Recover)</td><td class="m">49% of full</td><td class="m on">25% of full</td></tr>
+        </table></div>
+        <div class="callout">
+          <b>Verdict</b>
+          <p>For this mission, yes. The neck lifts the camera 2.4× higher and holds a tip off the floor, which the fixed-form crawler can't do at all. The cost is 16% slower crawling (the head and sled are dead weight while it moves) and a much longer stowed package, because the hinge and head don't fold. For a job that only needs crawling or tight storage, the plain crawler is the better robot. That's the brief's decision rule, measured.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="stages">
+    <div class="wrap sec">
+      <header><span class="no">09</span><h2>Three stages to a real robot</h2><p>Weight, power and the transformer kit</p></header>
+      <div>
+        <div class="prose">
+          <p>A paper robot is light, and everything that makes it move is not. At the default size (plate radius 30 mm), the body strip and plates weigh about 19 g. Two MG90S servos with their spools, risers and tray weigh 37 g, and they sit on the tail. The simulator's crawler had been carrying none of that. So the Build tab now estimates every part's weight and asks the simulator what the load does before you buy anything.</p>
+          <p>The paper weight comes from the template itself: triangle areas times the cardstock's grams per square metre, and plate areas times the card's weight. Parts use typical catalogue weights. Each tray's load then goes onto the plate it hangs from, as a fraction of the simulated body's own weight, and the gait runs again.</p>
+        </div>
+<figure class="code" data-src="../web/build.js" data-start="549"><figcaption><a href="../web/build.js">web/build.js</a><span>lines 549–560</span></figcaption><pre data-lang="js" data-mark="552-553"><code>  function crawlWithLoad(params, gait, tailFrac, headFrac, stiff, cycles) {
+    const pat = CL.buildCrawlerPattern(params);
+    const sim = CL.buildMesh(pat, Object.assign({ axial: 50, fold: 0.12, facet: 0.12 }, stiff || {}, { SimClass: LoadedRobotSim }));
+    const W = sim.g * sim.N;
+    sim.load = pat.rear.map((i) =&gt; [i, (tailFrac * W) / pat.rear.length]).concat(pat.front.map((i) =&gt; [i, (headFrac * W) / pat.front.length]));
+    sim.step(Math.round(1.5 / sim.dt)); sim.time = 0; sim.work = 0;
+    sim.tensionScale = CL.tensionScaleFor(sim);
+    const pl = new CL.GaitPlayer(gait), P = pl.period();
+    let t = 0; const go = (T) =&gt; { while (t &lt; T) { pl.apply(sim, t); sim.step(5); t += 5 * sim.dt; } };
+    go(P); const c0 = sim.com(); go(P * (cycles + 1)); const c1 = sim.com();
+    return ((c1[0] - c0[0]) / cycles) / sim.bodyLength;
+  }</code></pre></figure>
+        <ol class="notes">
+          <li data-line="552-553">The tray loads become extra downward force on the tail and head plate nodes, scaled by how heavy they are compared with the paper body. Everything else (cables, friction, gait) is the Move bench unchanged.</li>
+        </ol>
+        <div class="prose">
+          <h3>What the weight check found</h3>
+        </div>
+        <div class="tablewrap"><table class="cases">
+          <tr><th>Stage</th><th>Load (× paper body)</th><th>Inchworm, % of body length per cycle</th></tr>
+          <tr><td>Bare simulated body</td><td class="m">0</td><td class="m">19.8%</td></tr>
+          <tr><td>1 · tethered, MG90S servos on the tail</td><td class="m">1.9 tail</td><td class="m">13.1% (66%)</td></tr>
+          <tr><td>2 · on board, battery and board at the head</td><td class="m">1.9 tail + 2.0 head</td><td class="m">10.8% (54%)</td></tr>
+          <tr><td>2 · same weight, all on the tail</td><td class="m">4.0 tail</td><td class="m">5.4% (27%)</td></tr>
+        </table></div>
+        <div class="prose">
+          <p>Where the weight goes matters as much as how much there is. With the inchworm gait the tail has to slide forward on every contraction, so a heavy tail drags. That's why Stage 2 puts the battery and board under the head and leaves the servos at the tail. The two-anchor gait behaves the other way: extra weight makes its gripping feet hold better, and its speed goes <i>up</i> under load (9.7% bare, 14.6% with the Stage 2 load). A cheaper SG90 saves 9 g and wins back a few points (15.5% tethered).</p>
+          <p>Two geometry problems showed up only when the kit was laid out at real scale. First, the default gait pulls 59 mm of cable, which needs a 22 mm spool to fit in a servo's travel. Second, the transformer's Compact needs 81 mm, which needs a 30 mm spool, and a spool that size would scrape the floor with its shaft at plate-centre height. The kit now raises the servo risers until the spool clears the floor by 8 mm, and prints the riser height.</p>
+          <h3>Stage 3: the transformer, with real weights</h3>
+          <p>The transformer kit starts from the Stage 2 crawler and adds three things. A sled under the last plate carries the battery and board, 25 mm back and 55 mm forward of the plate; it is the simulator's shoulder pad, made asymmetric so it can't hit the tail tray in Compact. A third servo lies on its side 28.5 mm in front of that plate and is itself the neck hinge, so the simulator's neck tendons and their PID controller become one servo told an angle. A card box becomes the head. Putting every part's weight into the transformer simulator (140 g in all, 7.2 times the 19 g paper body) gave these results.</p>
+        </div>
+        <div class="tablewrap"><table class="cases">
+          <tr><th>Question</th><th>Answer in the simulator</th></tr>
+          <tr><td>Does it still transform?</td><td>Yes. Tower raises the neck to 89° and the camera from 33 mm to 81 mm, with the shoulder tipping back 5°.</td></tr>
+          <tr><td>Does Tower need gripping feet?</td><td>No. With scales alone the result is the same, so the kit has no grip servos.</td></tr>
+          <tr><td>Can the head be a paper Kresling cell?</td><td>No. Under the head's 20 g (camera plus box) it squashes, and the camera ends up at 33 mm, no higher than lying flat. The kit uses a rigid card box.</td></tr>
+          <tr><td>How fast does it crawl?</td><td>7.5 mm per cycle, against 17.9 for the simulated transformer without its parts. It is heavy for a paper body.</td></tr>
+          <tr><td>Servos on the sled instead of the tail?</td><td>Slightly worse: 7.2 mm per cycle, and the shoulder tips further in Tower (6°). They stay on the tail.</td></tr>
+        </table></div>
+        <div class="callout">
+          <b>What was checked, and what wasn't</b>
+          <p>No Arduino toolchain could be downloaded here, so every generated sketch was compiled against stand-in Arduino headers in both styles real cores use (macros on the Nano, C++ templates on the ESP32 and Pico), then run on a simulated clock to check the servo angles over time. That caught two sequencing bugs: the neck had moved while the cables were tight, and Compact had started before the head was back down. An independent review of the generated kits then found more, all now fixed: servos fed from the laptop's USB port during uploads (the kits now have a removable 5V link), no step to set the boost converter to 5 V, a battery and converter too small for two stalling servos, a charger set too fast for the cell, servos that could snap after a pause, a sled drawn the wrong way round, and a camera that looked at the ceiling in Tower (it now looks out of the head's underside, which faces forward when the head is up). It is not the same as flashing a board. The part weights are catalogue values, the card neck brackets are untested, and the speeds above assume the simulator's friction and crease stiffness, which Stage 1's measurements are there to calibrate.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="modules">
+    <div class="wrap sec">
+      <header><span class="no">10</span><h2>One fold, three motors</h2><p>The Modules bench</p></header>
+      <div>
+        <div class="prose">
+          <p>The other benches start from a whole robot. This one starts from the smallest thing that moves on its own: one crease that something electric can close. Two card panels share the crease. A puller runs across the inside of the fold between two anchors, A on the fixed panel and B on the moving one, each on a short post (the standoff). A rubber band on the outside opens it again, and a card tab stops it bending backwards. Copies of that module, joined end to end, make a crawler.</p>
+          <h3>A hinge, not a sheet</h3>
+          <p>One module has one degree of freedom, the fold angle θ, so it gets its own small simulation instead of the bar-and-hinge model. The moving panel's inertia, the paper crease (a torsion spring, stiffer for heavier card), the band, gravity and damping act on θ. The puller's pull becomes a torque through the geometry: it pulls along the straight line between A and B, and the torque is the pull times how fast that line shortens as θ grows. That lever arm starts at the standoff height and grows as the fold closes, which is why a fold is easy to hold shut and hard to start.</p>
+          <h3>Three pullers</h3>
+          <p>The <b>servo</b> winds a thread onto a spool. It has a stall torque, a top speed that falls under load, and a current that rises with load (SG90 and MG90S catalogue figures). The <b>shape-memory wire</b> is Nitinol: cold it is soft (martensite), and heated past about 70 °C it turns into a stiff phase (austenite) that remembers being 4% shorter. The <b>spring</b> is the same metal coiled, so it shortens by far more than 4% but pulls far less, computed with the usual coil-spring formulas in shear.</p>
+        </div>
+<figure class="code" data-src="../web/module.js" data-start="233"><figcaption><a href="../web/module.js">web/module.js</a><span>lines 233–255</span></figcaption><pre data-lang="js" data-mark="234,238-241,247"><code>      // heat balance (lumped: the wire is thin, so it is one temperature)
+      this.Tc += (dt * (Pw - this.hA * (this.Tc - 22))) / this.C;
+      // phase: heating moves along As→Af, cooling along Ms→Mf, both shifted up by the stress
+      let st = this.stress(th);
+      const shift = SMA.dTdS * st.sig * (this.kind === 'spring' ? 1.6 : 1), gr = this.gr;
+      const xh = smooth((this.Tc - gr.As - shift) / (gr.Af - gr.As)), xc = smooth((this.Tc - gr.Mf - shift) / (gr.Ms - gr.Mf));
+      let xn = this.xi;
+      if (xh &gt; xn) xn = xh;
+      if (xc &lt; xn) xn = xc;
+      if (xn &lt; this.xi) {
+        // new martensite forms at the length the wire is now
+        const keep = (1 - this.xi) * this.epsM + (this.xi - xn) * Math.max(0, st.eps);
+        this.epsM = xn &lt; 1 - 1e-9 ? keep / (1 - xn) : this.epsM;
+      }
+      this.Tc -= (SMA.latent * this.m * (xn - this.xi)) / this.C;   // transforming soaks up (or gives back) heat
+      this.xi = xn;
+      // a cold wire is soft: the return band can stretch it out again, at the detwinning stress
+      st = this.stress(th);
+      const ys = this.yieldS / Math.max(1e-3, 1 - this.xi);
+      if (st.sig &gt; ys &amp;&amp; this.epsM &lt; this.epsMax &amp;&amp; this.xi &lt; 0.98) {
+        this.epsM = Math.min(this.epsMax, (st.eps - ys / st.E) / (1 - this.xi));
+        st = this.stress(th);
+      }</code></pre></figure>
+        <ol class="notes">
+          <li data-line="234">The wire is thin enough to be one temperature: electrical heating in, still-air cooling out. The cooling coefficient is set so the model's cooling times match Dynalloy's Flexinol table (0.8 s at 0.10 mm, 2.0 s at 0.15 mm, 5.5 s at 0.25 mm), and it scales as one over the diameter.</li>
+          <li data-line="238-241">How much of the wire has turned hot (ξ) follows the temperature, with hysteresis: it changes on the way up between As and Af (68–78 °C) and on the way down between Ms and Mf (52–42 °C). Stress raises all four, about 0.15 °C per MPa, so a heavily loaded wire needs to be hotter.</li>
+          <li data-line="247">Changing phase takes heat (16 J/g), which is why the temperature curve flattens near 77 °C while the fold closes.</li>
+        </ol>
+        <div class="prose">
+          <p>The last lines of that step are what make the return band necessary. A cold wire doesn't spring back: it stays the length it was until something stretches it, at about 35 MPa. With the fold closed its lever arm is long, so the band, working on a short arm round the outside of the crease, has to be about three times stronger than you'd guess. Below about 1.1 N the default wire module folds once and stays folded, and just above that it takes over 6 s to open. A spring needs only a weak band, since it takes so little to stretch it.</p>
+          <p>The circuit and controller are the ones in the generated kit. A resistor in series with each wire is sized so that fully switched on, the current is Dynalloy's one-second current for that diameter. The controller heats at full power for as long as the heat balance says it takes to get fully hot, then drops to a holding power that keeps it about 10 °C above its (stress-raised) Af, around 100 °C. It never stays on longer than 10 s. The resistor is there for safety: even if a MOSFET fails stuck on, the wire can only ever carry its rated current. It costs energy, though. In the crawler about two-thirds of the heating power goes into the resistor.</p>
+          <h3>The comparison</h3>
+          <p>The defaults give each puller its own mounting, because they want different leverage: the wire has strong pull and little stroke, the spring the reverse. Fold test, then a crawler of three with directional feet and the wave gait:</p>
+        </div>
+        <div class="tablewrap"><table class="cases">
+          <tr><th></th><th>Servo (SG90)</th><th>SMA wire, 0.15 mm</th><th>SMA spring, 0.2 mm</th></tr>
+          <tr><td>Folds to</td><td class="m">89° (told 90°)</td><td class="m">81°</td><td class="m">100°</td></tr>
+          <tr><td>Closes in, opens in</td><td class="m">0.48 s, 0.5 s</td><td class="m">0.60 s, 3.6 s</td><td class="m">1.52 s, 4.9 s</td></tr>
+          <tr><td>Energy per fold</td><td class="m">0.88 J</td><td class="m">1.40 J</td><td class="m">2.57 J</td></tr>
+          <tr><td>Current, most</td><td class="m">0.15 A</td><td class="m">0.40 A</td><td class="m">0.58 A</td></tr>
+          <tr><td>Puller weighs</td><td class="m">10.5 g</td><td class="m">0.4 g</td><td class="m">0.4 g</td></tr>
+          <tr><td>Crawler of three</td><td class="m">26.0 mm/s, 32.6 g</td><td class="m">7.4 mm/s, 2.3 g</td><td class="m">5.5 mm/s, 2.4 g</td></tr>
+          <tr><td>Distance per joule</td><td class="m">19 mm</td><td class="m">11 mm</td><td class="m">6 mm</td></tr>
+        </table></div>
+        <div class="prose">
+          <p>The servo wins on speed, control and energy, and the shape-memory pullers win on weight, by a factor of 14 for the crawler. (The servo times are set by the sketch, which never turns a servo faster than 200° a second.) Tethered to a laptop, the servo is the better choice. For a robot that carries its own battery, every gram of puller is a gram the folds have to lift, and that is where shape-memory pays off. The wire uses about twice the servo's energy per millimetre crawled, mostly in its safety resistor, even though the crawler's arch stop means each fold needs only a short wire (65 mm, cut so its full shortening just reaches the stop). The spring is three times worse than the servo, partly because the stop blocks it before it has finished closing.</p>
+          <h3>Copies in a row</h3>
+          <p>In the crawler every fold bends the same way, so the strip is always an arch standing on its two ends. The model is quasi-static. Each hinge runs its own simulation, and the strip's shape follows from the angles. When the ends move closer together, or further apart, one end has to slide, and it is the one that's easier to slide.</p>
+        </div>
+<figure class="code" data-src="../web/module.js" data-start="381"><figcaption><a href="../web/module.js">web/module.js</a><span>lines 381–389</span></figcaption><pre data-lang="js" data-mark="384-388"><code>      // weight on each end (lever rule about the centre of mass, using the average shape)
+      const cAvg = (this.cx + cPrev) / 2, dAvg = (this.d + dPrev) / 2;
+      const Nf = clamp(cAvg / dAvg, 0, 1), Nr = 1 - Nf;
+      // getting shorter: rear end forward, or front end back; getting longer: rear back, or front forward
+      const rear = (dd &lt; 0 ? this.muF : this.muB) * Nr, front = (dd &lt; 0 ? this.muB : this.muF) * Nf;
+      let share;                                    // how much of the change the rear end takes
+      if (Math.abs(rear - front) &lt; 0.02 * (rear + front)) share = 0.5;
+      else share = rear &lt; front ? 1 : 0;
+      this.xr -= share * dd;                        // the rear end moves by −dd·share, the front by +dd·(1−share)</code></pre></figure>
+        <ol class="notes">
+          <li data-line="384-388">The weight on each end comes from where the centre of mass sits between them. Folding pulls the rear end forward or the front end back, whichever costs less friction. With feet that grip four times harder backwards than forwards, the rear slides forward as it folds and the front slides forward as it opens, so every cycle gains the whole change in length. With the same grip both ways, the ends share the movement and it goes nowhere, which is what the plain feet show.</li>
+        </ol>
+        <div class="prose">
+          <p>An earlier version simulated the strip freely, with inertia and contact. Its crawling speed changed several-fold with an arbitrary damping setting, because the light paper hopped every time a fold snapped shut, and it reported more distance per cycle than the arch even gets shorter by. The quasi-static model can't do that: three folds to 40° shorten the strip by 50 mm, and it crawls just under that, 49.8 mm a cycle. It ignores momentum, so a real fast servo crawler may scoot or bounce in ways it misses.</p>
+        </div>
+        <div class="callout">
+          <b>What was checked, and what wasn't</b>
+          <p>The shape-memory numbers come from Dynalloy's published Flexinol table (resistance, the current for a one-second contraction, recommended pull and cooling times) and textbook values for Nitinol's moduli, heat capacity and latent heat. The paper crease stiffness and the friction of the feet are estimates. Every generated sketch (3 pullers × 3 boards × one module or a crawler) compiles against stand-in Arduino headers and was run on a simulated clock. That run found that the first version refused to heat any wire in the first 3.6 s after power-on. It also checked that a fold held on is cut off at 10 s and never re-heated before it has cooled, and that servos never jump once running (at power-up they move to their zero angle).</p>
+          <p>An independent review of the first version found more, all now fixed:</p>
+          <ul>
+            <li>Short or thick wire could be pulsed at ten times its rated current, with nothing in the hardware to stop a MOSFET stuck on (hence the series resistor).</li>
+            <li>The wire was routed round 1 mm paperclip pins, far below the bend radius Dynalloy asks for. It now runs straight, round one 10 mm post, or off the panel.</li>
+            <li>Plastic straw posts were suggested next to a 100 °C wire.</li>
+            <li>The servo gait timings assumed a faster servo than the sketch allows.</li>
+            <li>The power ratings and fuses were fixed values instead of being sized from the current.</li>
+            <li>The start button had no debounce.</li>
+            <li>An ESP32 pin pulsed at boot.</li>
+            <li>Hot-wire stress had no limit.</li>
+            <li>The end stops were springy enough to overshoot.</li>
+          </ul>
+          <p>Nothing here has been built yet.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="results">
+    <div class="wrap sec">
+      <header><span class="no">→</span><h2>Results</h2><p>Default designs, measured in the simulator</p></header>
+      <div class="prose">
+        <p>Units are the model's own. Lengths are in pattern units (1 = one plate radius for the crawler) and forces are relative to the bar stiffness, so compare designs with each other rather than reading the numbers as newtons.</p>
+        <h3>Folding</h3>
+        <div class="tbl"><table>
+          <thead><tr><th>Pattern</th><th class="n">Footprint at 95% fold</th><th class="n">Peak panel strain</th><th class="n">at fold</th></tr></thead>
+          <tbody>
+            <tr><th>Miura-ori 4×4</th><td class="n">4.8%</td><td class="n">1.33%</td><td class="n">50%</td></tr>
+            <tr><th>Yoshimura 5×4</th><td class="n">1.8%</td><td class="n">0.62%</td><td class="n">55%</td></tr>
+            <tr><th>Waterbomb base</th><td class="n">9.7%</td><td class="n">0.46%</td><td class="n">30%</td></tr>
+          </tbody>
+        </table></div>
+        <p>The default Kresling tower is bistable: pushing its lid down takes a peak force of 2.20 at 9% compression, the force then turns negative (down to −0.47), and the tower comes to rest again near 72% compression.</p>
+        <h3>Design search (12 generations, seed 1)</h3>
+        <ul>
+          <li><strong>Miura, fold most compactly at 60%:</strong> score 0.49 → 0.71. The footprint left at 60% fold went from 44% to 15%, at the cost of strain rising from 1.2% to 2.3%. The search pushed the sector angle to its 85° limit and the zigzag edge to its 0.4 limit, so the answer is "as close to a plain accordion as allowed".</li>
+          <li><strong>Kresling, strongest second stable state:</strong> the pull that holds it shut went from 0.47 to 2.12, with a taller cell (1.74) and the twist at its 10° limit.</li>
+        </ul>
+        <h3>Crawling (default crawler, cables at 80% pull, three cycles)</h3>
+        <div class="tbl"><table>
+          <thead><tr><th>Gait</th><th>Feet</th><th class="n">Forward per cycle</th><th class="n">Turn per cycle</th><th class="n">Cost of transport</th></tr></thead>
+          <tbody>
+            <tr><th>Inchworm</th><td>directional</td><td class="n">19.8% of body</td><td class="n">0.0°</td><td class="n">1.49</td></tr>
+            <tr><th>Two-anchor crawl</th><td>anchors</td><td class="n">9.7%</td><td class="n">−1.0°</td><td class="n">3.33</td></tr>
+            <tr><th>Turn left</th><td>anchors</td><td class="n">7.5%</td><td class="n">+1.9°</td><td class="n">2.62</td></tr>
+            <tr><th>Turn right</th><td>anchors</td><td class="n">6.5%</td><td class="n">−2.5°</td><td class="n">3.27</td></tr>
+            <tr><th>Stretch on plain paper</th><td>plain</td><td class="n">0.0%</td><td class="n">0.0°</td><td class="n">–</td></tr>
+          </tbody>
+        </table></div>
+        <p>Tuning the inchworm with CMA-ES for 10 generations (90 gaits) raised its two-cycle score from 18.7% to 20.5% of a body length per cycle, mostly by lengthening both phases. The gait was already close to the best this body allows.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="limits">
+    <div class="wrap sec">
+      <header><span class="no">→</span><h2>Limits</h2><p>Honest caveats</p></header>
+      <div>
+        <div class="prose">
+          <ul>
+            <li>Nothing here has been checked against a real fold or a real robot yet. Crease stiffness in particular is a guess; the page tells you to measure the built body's contraction and tune the simulator to match.</li>
+            <li>The units are made up. Gravity, friction and stiffness were tuned by hand until the crawler behaved plausibly, so absolute speeds and forces mean little.</li>
+            <li>Driving every crease toward the same angle overstates Miura strain (02).</li>
+            <li>Steering is weak: about 2° per cycle, and the two-anchor crawl drifts about 1° right per cycle, apparently from how the alternating cells twist.</li>
+            <li>The Transform bench's hinge frames and battery are modelling choices, not measurements: the frames are 8× stiffer than paper and the battery's weight is a slider. Its comparison is one mission against one baseline, and the fixed-form crawler wasn't tuned for that mission.</li>
+            <li>There is no self-collision. Panels can pass through each other past about 60% contraction, and the hand can push the sheet through itself.</li>
+            <li>The optimizer often ends at the edge of a parameter's range, which means the range, not the physics, is choosing the answer there.</li>
+            <li>The generated Arduino sketches have been compiled against stand-in headers and run on a simulated clock (09), not compiled with a real board toolchain or run on hardware.</li>
+            <li>The weight check uses catalogue part weights and assumes the simulator's friction is right. Weigh your parts, and calibrate the simulator with Stage 1 before trusting its Stage 2 and 3 speeds.</li>
+            <li>The Modules bench simulates one hinge at a time and the crawler quasi-statically: modules don't load each other's hinges, and momentum is ignored. Its shape-memory model is a simplified two-phase model fitted to one maker's data sheet, so expect to tune heating times and band strength on the real wire.</li>
+            <li>It is plain JavaScript on one thread: fine for exploring, too slow for serious reinforcement learning. <code>CreaseLab.CrawlerEnv</code> has the reset/step shape you would port to JAX or PyTorch.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="reproduce">
+    <div class="wrap sec">
+      <header><span class="no">→</span><h2>Reproduce</h2><p>No build step, no install</p></header>
+      <div>
+        <div class="prose">
+          <p>Open the page. Everything is exposed as <code>window.CreaseLab</code>, so the numbers above can be rerun from the browser console:</p>
+        </div>
+        <pre class="cmd">const CL = window.CreaseLab;
+CL.evaluateGait(CL.defaultRobot(), CL.GAITS.inchworm, { cycles: 3 });   // perCycle 0.198
+const s = CL.buildMesh(CL.buildPattern('miura', CL.defaultParams('miura')));
+s.damping = 2; CL.foldSweep(s, 19, 0.95);                              // footprint and strain vs fold
+const env = new CL.CrawlerEnv({}, { feet: 'anchors' });                // reset() / step(action)
+const report = CL.runMission();                                        // Transform: five steps + fixed-form baseline</pre>
+        <div class="prose">
+          <p>The same files also load in Node (<code>require('./web/build.js')</code> pulls in the rest), which is how the tables here were made.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="code">
+    <div class="wrap sec">
+      <header><span class="no">→</span><h2>Read further</h2><p>Where everything lives</p></header>
+      <div>
+        <ul class="files">
+          <li><a href="../web/core.js">web/core.js</a> <span>crease patterns, the bar-and-hinge simulator, hand grabbing, FOLD import and export, CMA-ES</span></li>
+          <li><a href="../web/import.js">web/import.js</a> <span>opening .cp and .svg drawings: splits crossing lines, finds the panels and triangulates them</span></li>
+          <li><a href="../web/motion.js">web/motion.js</a> <span>the crawler body, ground and friction, cables, primitives, gaits, gait search, CrawlerEnv</span></li>
+          <li><a href="../web/transform.js">web/transform.js</a> <span>the Transform bench: the jointed body, hinge tendons and end stops, the mode library, the neck servo, the mission and its fixed-form baseline</span></li>
+          <li><a href="../web/build.js">web/build.js</a> <span>fold templates, servo plan, parts list, Arduino sketch, README and zip writer</span></li>
+          <li><a href="../web/transform-build.js">web/transform-build.js</a> <span>the Stage 3 transformer kit</span></li>
+          <li><a href="../web/module.js">web/module.js</a> <span>the Modules bench: hinge geometry, servo and shape-memory pullers (heat, phase, stress), the fold test and the quasi-static crawler</span></li>
+          <li><a href="../web/module-build.js">web/module-build.js</a> <span>the module kit: template, parts, wiring, Arduino sketch and README</span></li>
+          <li><a href="../web/app.js">web/app.js</a> <span>the page: 3D view (three.js r128, vendored), the side view, the five tabs</span></li>
+        </ul>
+        <div class="prose" style="margin-top:20px">
+          <ul>
+            <li>K. Liu and G. H. Paulino, <a href="https://doi.org/10.1098/rspa.2017.0348">Nonlinear mechanics of non-rigid origami: an efficient computational approach</a>, Proc. R. Soc. A, 2017. The bar-and-hinge model and its gradients.</li>
+            <li>A. Ghassaei, E. D. Demaine and N. Gershenfeld, <a href="https://erikdemaine.org/papers/OrigamiSimulator_Origami7/">Fast, Interactive Origami Simulation using GPU Computation</a>, Origami<sup>7</sup>, 2018. Driving every crease toward a fraction of its fold.</li>
+            <li>N. Hansen, <a href="https://arxiv.org/abs/1604.00772">The CMA Evolution Strategy: A Tutorial</a>, 2016.</li>
+            <li><a href="https://github.com/edemaine/fold">The FOLD file format</a>, which the page imports and exports.</li>
+          </ul>
+        </div>
+        <div class="next" style="margin-top:22px"><a class="btn primary" href="../">Back to Crease Lab</a><a class="btn" href="../../../#projects">All projects</a></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap"><p>© <span id="yr">2026</span> William Chang · <a href="../../../">Home</a></p></div>
+</footer>
+
+<script src="../../how-it-works.js"></script>
+</body>
+</html>

@@ -1,0 +1,1282 @@
+{
+  "schemaVersion": 1,
+  "sourceHashes": {
+    "core.js": "1b3ff8c0cf80b23ba8721a54c37d1ac1db949e5c2e1f54e9fbc6f132fd110c4c",
+    "motion.js": "4abb7f27b7171dcf712bfc7d92bb5cfdf8a435e39b8fa1c91701d72233a119ec"
+  },
+  "model": "supplied Crease Lab bar-and-hinge crawler",
+  "protocol": {
+    "gait": "inchworm",
+    "axial": 50,
+    "facet": 0.12,
+    "baseFold": 0.12,
+    "baseFriction": {
+      "forward": 0.12,
+      "backward": 1.2,
+      "lateral": 0.8
+    },
+    "peakCableTension": 2.56,
+    "settle": 1.5,
+    "warmup": 6,
+    "measurement": 18,
+    "units": "uncalibrated simulator units; not SI or hardware measurements"
+  },
+  "rows": [
+    {
+      "config": {
+        "frictionScale": 0.25,
+        "foldScale": 0.5,
+        "dt": 0.005,
+        "actuation": true
+      },
+      "status": "completed",
+      "metrics": {
+        "forwardDisplacement": 2.255772140228875,
+        "bodyLengthsPerCycle": 0.18798101168573964,
+        "meanForwardSpeed": 0.12532067445715972,
+        "lateralDisplacement": -0.019210999797951257,
+        "positiveCableWork": 15.676757643947209,
+        "minLength": 0.5975104666881768,
+        "maxLength": 2.053746172137455,
+        "maxPenetration": 0.03323444279931477,
+        "maxBarStrain": 0.03045890881627855
+      },
+      "trajectory": [
+        {
+          "time": 0,
+          "com": [
+            2.345842339060259,
+            -0.01566617198904105,
+            0.881341667868651
+          ],
+          "length": 1.94809934849881
+        },
+        {
+          "time": 6,
+          "com": [
+            2.9180468324671134,
+            0.004804288558798954,
+            0.8943891331368315
+          ],
+          "length": 1.3659794508998866
+        },
+        {
+          "time": 12,
+          "com": [
+            3.7648718350508372,
+            -0.00433987873991442,
+            0.9015934196804545
+          ],
+          "length": 1.1440455946223056
+        },
+        {
+          "time": 18,
+          "com": [
+            4.601691908378342,
+            -0.020108215822328537,
+            0.9030987917817452
+          ],
+          "length": 1.0601973089158914
+        }
+      ]
+    },
+    {
+      "config": {
+        "frictionScale": 1,
+        "foldScale": 0.5,
+        "dt": 0.005,
+        "actuation": true
+      },
+      "status": "completed",
+      "metrics": {
+        "forwardDisplacement": 1.4750565233566737,
+        "bodyLengthsPerCycle": 0.1229213769463895,
+        "meanForwardSpeed": 0.08194758463092632,
+        "lateralDisplacement": -0.04228733957043014,
+        "positiveCableWork": 19.676635499338854,
+        "minLength": 0.8495937893126336,
+        "maxLength": 2.247175056612297,
+        "maxPenetration": 0.03292246894659098,
+        "maxBarStrain": 0.035427770238396716
+      },
+      "trajectory": [
+        {
+          "time": 0,
+          "com": [
+            2.4612263791087132,
+            0.0044955402388158275,
+            0.8762415801877886
+          ],
+          "length": 2.161486223961466
+        },
+        {
+          "time": 6,
+          "com": [
+            3.037828070741181,
+            -0.020874512359156924,
+            0.878666553289899
+          ],
+          "length": 1.7670171479705346
+        },
+        {
+          "time": 12,
+          "com": [
+            3.5478260061182194,
+            -0.03851630245547238,
+            0.8555385638761833
+          ],
+          "length": 1.5460002245256508
+        },
+        {
+          "time": 18,
+          "com": [
+            3.9364028202932144,
+            -0.0333783763694778,
+            0.8835663609421235
+          ],
+          "length": 1.2497028135347321
+        }
+      ]
+    },
+    {
+      "config": {
+        "frictionScale": 2,
+        "foldScale": 0.5,
+        "dt": 0.005,
+        "actuation": true
+      },
+      "status": "completed",
+      "metrics": {
+        "forwardDisplacement": 0.7518161838998325,
+        "bodyLengthsPerCycle": 0.06265134865831938,
+        "meanForwardSpeed": 0.04176756577221292,
+        "lateralDisplacement": -0.06200457175623855,
+        "positiveCableWork": 17.838895851491205,
+        "minLength": 1.118937689403565,
+        "maxLength": 2.3038792503093024,
+        "maxPenetration": 0.03292859973298477,
+        "maxBarStrain": 0.04039042362312073
+      },
+      "trajectory": [
+        {
+          "time": 0,
+          "com": [
+            2.3379261658020702,
+            0.02955820018931813,
+            0.8817716950369773
+          ],
+          "length": 2.230007629433776
+        },
+        {
+          "time": 6,
+          "com": [
+            2.65953337255304,
+            0.007302685226899426,
+            0.8887302460674463
+          ],
+          "length": 1.8337788593423479
+        },
+        {
+          "time": 12,
+          "com": [
+            2.886704991369835,
+            -0.01892922381462479,
+            0.8763199180141342
+          ],
+          "length": 1.722046749656844
+        },
+        {
+          "time": 18,
+          "com": [
+            3.089738376176846,
+            -0.03249453241590118,
+            0.8610583265725124
+          ],
+          "length": 1.6185631833914198
+        }
+      ]
+    },
+    {
+      "config": {
+        "frictionScale": 0.25,
+        "foldScale": 1,
+        "dt": 0.005,
+        "actuation": true
+      },
+      "status": "completed",
+      "metrics": {
+        "forwardDisplacement": 3.0868430313299764,
+        "bodyLengthsPerCycle": 0.2572369192774981,
+        "meanForwardSpeed": 0.171491279518332,
+        "lateralDisplacement": -0.011199297073346135,
+        "positiveCableWork": 24.428542832297353,
+        "minLength": 1.540576201552083,
+        "maxLength": 2.7805040798491363,
+        "maxPenetration": 0.03243736245137804,
+        "maxBarStrain": 0.03189125078841226
+      },
+      "trajectory": [
+        {
+          "time": 0,
+          "com": [
+            2.353380297203078,
+            -0.020794542816848612,
+            0.8380049383713357
+          ],
+          "length": 2.6458572078884726
+        },
+        {
+          "time": 6,
+          "com": [
+            3.154560993493275,
+            -0.002919894975047733,
+            0.8705300202760546
+          ],
+          "length": 2.414796167271921
+        },
+        {
+          "time": 12,
+          "com": [
+            4.233361093109794,
+            -0.01679954997249061,
+            0.8895404680647656
+          ],
+          "length": 2.3308146555508826
+        },
+        {
+          "time": 18,
+          "com": [
+            5.440173247403761,
+            -0.04164177085168595,
+            0.8945430630172388
+          ],
+          "length": 2.30035450727199
+        }
+      ]
+    },
+    {
+      "config": {
+        "frictionScale": 1,
+        "foldScale": 1,
+        "dt": 0.005,
+        "actuation": true
+      },
+      "status": "completed",
+      "metrics": {
+        "forwardDisplacement": 2.421560077584153,
+        "bodyLengthsPerCycle": 0.20179667313201277,
+        "meanForwardSpeed": 0.13453111542134183,
+        "lateralDisplacement": -0.022889093672298348,
+        "positiveCableWork": 25.611622790280972,
+        "minLength": 1.6015144405740713,
+        "maxLength": 3.000892067092376,
+        "maxPenetration": 0.03238214620436254,
+        "maxBarStrain": 0.03602571991377057
+      },
+      "trajectory": [
+        {
+          "time": 0,
+          "com": [
+            2.4702557179232953,
+            -0.005062391857859512,
+            0.8470926287650367
+          ],
+          "length": 2.8507878176423374
+        },
+        {
+          "time": 6,
+          "com": [
+            3.1385716052768604,
+            -0.02413036621369117,
+            0.8471219591490442
+          ],
+          "length": 2.586184391098453
+        },
+        {
+          "time": 12,
+          "com": [
+            3.9920444870814715,
+            -0.027406208755255484,
+            0.8735092912471645
+          ],
+          "length": 2.389342544938915
+        },
+        {
+          "time": 18,
+          "com": [
+            4.891827841815175,
+            -0.026639434015610846,
+            0.8866060794208898
+          ],
+          "length": 2.3229865462953616
+        }
+      ]
+    },
+    {
+      "config": {
+        "frictionScale": 2,
+        "foldScale": 1,
+        "dt": 0.005,
+        "actuation": true
+      },
+      "status": "completed",
+      "metrics": {
+        "forwardDisplacement": 1.2146138004357128,
+        "bodyLengthsPerCycle": 0.10121781670297608,
+        "meanForwardSpeed": 0.0674785444686507,
+        "lateralDisplacement": -0.03785415073144902,
+        "positiveCableWork": 26.45080963311425,
+        "minLength": 1.6893346899862147,
+        "maxLength": 3.045873620117529,
+        "maxPenetration": 0.03409309291972462,
+        "maxBarStrain": 0.03653614164455776
+      },
+      "trajectory": [
+        {
+          "time": 0,
+          "com": [
+            2.3472537775244247,
+            0.011498449643710627,
+            0.8614118154137285
+          ],
+          "length": 2.911352860753226
+        },
+        {
+          "time": 6,
+          "com": [
+            2.7446822283863272,
+            -0.021556858653892962,
+            0.8202455510738876
+          ],
+          "length": 2.7396970988718694
+        },
+        {
+          "time": 12,
+          "com": [
+            3.111365978470368,
+            -0.03185594723587459,
+            0.8367492955693724
+          ],
+          "length": 2.4972483120693365
+        },
+        {
+          "time": 18,
+          "com": [
+            3.5617387017148663,
+            -0.030286593740524136,
+            0.8529957061608495
+          ],
+          "length": 2.403949737153257
+        }
+      ]
+    },
+    {
+      "config": {
+        "frictionScale": 0.25,
+        "foldScale": 2,
+        "dt": 0.005,
+        "actuation": true
+      },
+      "status": "completed",
+      "metrics": {
+        "forwardDisplacement": 3.7167377599527267,
+        "bodyLengthsPerCycle": 0.30972814666272724,
+        "meanForwardSpeed": 0.20648543110848483,
+        "lateralDisplacement": -0.0313334679606602,
+        "positiveCableWork": 34.701853051085806,
+        "minLength": 2.516021397360377,
+        "maxLength": 3.7827898862311975,
+        "maxPenetration": 0.03265914150046056,
+        "maxBarStrain": 0.035299827000709105
+      },
+      "trajectory": [
+        {
+          "time": 0,
+          "com": [
+            2.3929858317884425,
+            -0.007020394363416827,
+            0.8685226573743104
+          ],
+          "length": 3.6119725348571734
+        },
+        {
+          "time": 6,
+          "com": [
+            3.3603754027558717,
+            -0.013510887906861554,
+            0.8739316111760185
+          ],
+          "length": 3.6323130857636863
+        },
+        {
+          "time": 12,
+          "com": [
+            4.66031756866456,
+            -0.0341073738440827,
+            0.8838991296417561
+          ],
+          "length": 3.617486705525327
+        },
+        {
+          "time": 18,
+          "com": [
+            6.109499613811103,
+            -0.05846619602377203,
+            0.8877963222767601
+          ],
+          "length": 3.6148988906464186
+        }
+      ]
+    },
+    {
+      "config": {
+        "frictionScale": 1,
+        "foldScale": 2,
+        "dt": 0.005,
+        "actuation": true
+      },
+      "status": "completed",
+      "metrics": {
+        "forwardDisplacement": 3.6227368004319107,
+        "bodyLengthsPerCycle": 0.30189473336932593,
+        "meanForwardSpeed": 0.2012631555795506,
+        "lateralDisplacement": 0.013150261398247435,
+        "positiveCableWork": 33.326838825782566,
+        "minLength": 2.5493229031031266,
+        "maxLength": 3.722761099740657,
+        "maxPenetration": 0.03348918116344474,
+        "maxBarStrain": 0.038667108093401126
+      },
+      "trajectory": [
+        {
+          "time": 0,
+          "com": [
+            2.5499781994308233,
+            -0.003515008133981685,
+            0.845494182185384
+          ],
+          "length": 3.626582026332246
+        },
+        {
+          "time": 6,
+          "com": [
+            3.6784535532892555,
+            -0.017874233855464345,
+            0.8838900031162912
+          ],
+          "length": 3.5651353597637896
+        },
+        {
+          "time": 12,
+          "com": [
+            4.925353694170523,
+            -0.022595493867565826,
+            0.8883481319949236
+          ],
+          "length": 3.576838491388266
+        },
+        {
+          "time": 18,
+          "com": [
+            6.172696406011833,
+            -0.02105497064674472,
+            0.8870190726317089
+          ],
+          "length": 3.5810366717533384
+        }
+      ]
+    },
+    {
+      "config": {
+        "frictionScale": 2,
+        "foldScale": 2,
+        "dt": 0.005,
+        "actuation": true
+      },
+      "status": "completed",
+      "metrics": {
+        "forwardDisplacement": 2.4868857178798325,
+        "bodyLengthsPerCycle": 0.2072404764899861,
+        "meanForwardSpeed": 0.1381603176599907,
+        "lateralDisplacement": -0.004424281460104526,
+        "positiveCableWork": 31.840157163477464,
+        "minLength": 2.6314018589749435,
+        "maxLength": 3.7210932955077403,
+        "maxPenetration": 0.0336343827591586,
+        "maxBarStrain": 0.038466000429274394
+      },
+      "trajectory": [
+        {
+          "time": 0,
+          "com": [
+            2.392946959832604,
+            0.01165651700418232,
+            0.8485478685897158
+          ],
+          "length": 3.6592523313814405
+        },
+        {
+          "time": 6,
+          "com": [
+            3.153401238909391,
+            -0.005901924497302917,
+            0.8651606503301505
+          ],
+          "length": 3.565365111960807
+        },
+        {
+          "time": 12,
+          "com": [
+            4.018153696333874,
+            -0.010499307147414368,
+            0.8704991814255562
+          ],
+          "length": 3.5747555286357673
+        },
+        {
+          "time": 18,
+          "com": [
+            4.879717375353431,
+            -0.012696071184768721,
+            0.8692687741944012
+          ],
+          "length": 3.5809426150897243
+        }
+      ]
+    }
+  ],
+  "controls": [
+    {
+      "config": {
+        "frictionScale": 0,
+        "foldScale": 1,
+        "dt": 0.005,
+        "actuation": true
+      },
+      "status": "completed",
+      "metrics": {
+        "forwardDisplacement": -4.440892098500626e-16,
+        "bodyLengthsPerCycle": -3.7007434154171895e-17,
+        "meanForwardSpeed": -2.4671622769447922e-17,
+        "lateralDisplacement": 1.5092094240998222e-16,
+        "positiveCableWork": 23.23919793676008,
+        "minLength": 1.5453863274801118,
+        "maxLength": 2.666856464921101,
+        "maxPenetration": 0.03271895604028455,
+        "maxBarStrain": 0.02690457222847986
+      },
+      "trajectory": [
+        {
+          "time": 0,
+          "com": [
+            2,
+            1.0408340855860843e-17,
+            0.8647718070573885
+          ],
+          "length": 2.468691519380015
+        },
+        {
+          "time": 6,
+          "com": [
+            1.9999999999999996,
+            -4.336808689942018e-17,
+            0.8894829393761594
+          ],
+          "length": 2.347681701674564
+        },
+        {
+          "time": 12,
+          "com": [
+            1.9999999999999998,
+            2.3592239273284576e-16,
+            0.8927859873629906
+          ],
+          "length": 2.3221479907793583
+        },
+        {
+          "time": 18,
+          "com": [
+            1.9999999999999996,
+            1.6132928326584306e-16,
+            0.892951294459887
+          ],
+          "length": 2.3171530836165406
+        }
+      ]
+    },
+    {
+      "config": {
+        "frictionScale": 1,
+        "foldScale": 1,
+        "dt": 0.005,
+        "actuation": false
+      },
+      "status": "completed",
+      "metrics": {
+        "forwardDisplacement": 0.00022222295899476888,
+        "bodyLengthsPerCycle": 0.000018518579916230743,
+        "meanForwardSpeed": 0.000012345719944153826,
+        "lateralDisplacement": -0.0007441846176761307,
+        "positiveCableWork": 0,
+        "minLength": 3.965715077142831,
+        "maxLength": 3.9697291389421885,
+        "maxPenetration": 0.016320211648475347,
+        "maxBarStrain": 0.022011551197112955
+      },
+      "trajectory": [
+        {
+          "time": 0,
+          "com": [
+            2.0023020179254125,
+            -0.0003049124447378499,
+            0.8554923187114254
+          ],
+          "length": 3.969731920953859
+        },
+        {
+          "time": 6,
+          "com": [
+            2.0025141181187704,
+            -0.0010880371230706874,
+            0.8507289030220327
+          ],
+          "length": 3.9665954621070427
+        },
+        {
+          "time": 12,
+          "com": [
+            2.0025298303840384,
+            -0.0010945496483542264,
+            0.8505354698354285
+          ],
+          "length": 3.9665042533305193
+        },
+        {
+          "time": 18,
+          "com": [
+            2.002524176365188,
+            -0.001049116325624459,
+            0.8505655708014359
+          ],
+          "length": 3.9665313151846266
+        }
+      ]
+    }
+  ],
+  "refined": [
+    {
+      "config": {
+        "frictionScale": 0.25,
+        "foldScale": 0.5,
+        "dt": 0.0025,
+        "actuation": true
+      },
+      "status": "completed",
+      "metrics": {
+        "forwardDisplacement": 2.2569344987869466,
+        "bodyLengthsPerCycle": 0.18807787489891226,
+        "meanForwardSpeed": 0.12538524993260813,
+        "lateralDisplacement": -0.01906763443206616,
+        "positiveCableWork": 15.67282450551993,
+        "minLength": 0.5967466063250283,
+        "maxLength": 2.0520962835866885,
+        "maxPenetration": 0.033246019933275715,
+        "maxBarStrain": 0.030426527839655715
+      },
+      "trajectory": [
+        {
+          "time": 0,
+          "com": [
+            2.3459896604540176,
+            -0.01572215654605564,
+            0.88138627097234
+          ],
+          "length": 1.9462610198537447
+        },
+        {
+          "time": 6,
+          "com": [
+            2.9188612016067523,
+            0.004910674094459833,
+            0.8944513055683617
+          ],
+          "length": 1.3642904415836024
+        },
+        {
+          "time": 12,
+          "com": [
+            3.7657855081440164,
+            -0.004242994521263145,
+            0.9016094086234121
+          ],
+          "length": 1.143155912323966
+        },
+        {
+          "time": 18,
+          "com": [
+            4.60300063964509,
+            -0.020005415641054985,
+            0.9031062219062277
+          ],
+          "length": 1.0600653482096114
+        }
+      ]
+    },
+    {
+      "config": {
+        "frictionScale": 1,
+        "foldScale": 0.5,
+        "dt": 0.0025,
+        "actuation": true
+      },
+      "status": "completed",
+      "metrics": {
+        "forwardDisplacement": 1.480549083191163,
+        "bodyLengthsPerCycle": 0.12337909026593026,
+        "meanForwardSpeed": 0.0822527268439535,
+        "lateralDisplacement": -0.04222963393026033,
+        "positiveCableWork": 19.687053980341254,
+        "minLength": 0.8474668353611947,
+        "maxLength": 2.245950237555173,
+        "maxPenetration": 0.03293835769680654,
+        "maxBarStrain": 0.03540338861316639
+      },
+      "trajectory": [
+        {
+          "time": 0,
+          "com": [
+            2.4624377910057627,
+            0.0044164683017217255,
+            0.8762530734735943
+          ],
+          "length": 2.160046528043345
+        },
+        {
+          "time": 6,
+          "com": [
+            3.0402809133446795,
+            -0.021008564980041652,
+            0.8786115727575128
+          ],
+          "length": 1.7661600134185444
+        },
+        {
+          "time": 12,
+          "com": [
+            3.5515043237362254,
+            -0.038566088282446266,
+            0.8552853829975188
+          ],
+          "length": 1.544322280515033
+        },
+        {
+          "time": 18,
+          "com": [
+            3.9431067549928005,
+            -0.03337703385974789,
+            0.8838068171179809
+          ],
+          "length": 1.2482997072323903
+        }
+      ]
+    },
+    {
+      "config": {
+        "frictionScale": 2,
+        "foldScale": 0.5,
+        "dt": 0.0025,
+        "actuation": true
+      },
+      "status": "completed",
+      "metrics": {
+        "forwardDisplacement": 0.75467343026479,
+        "bodyLengthsPerCycle": 0.06288945252206583,
+        "meanForwardSpeed": 0.04192630168137722,
+        "lateralDisplacement": -0.06208047809169165,
+        "positiveCableWork": 17.858246503414943,
+        "minLength": 1.116992887540324,
+        "maxLength": 2.3023360528381547,
+        "maxPenetration": 0.03294582930395135,
+        "maxBarStrain": 0.04037483164188216
+      },
+      "trajectory": [
+        {
+          "time": 0,
+          "com": [
+            2.3391191954934465,
+            0.029479610138232942,
+            0.881799778029315
+          ],
+          "length": 2.228351192689002
+        },
+        {
+          "time": 6,
+          "com": [
+            2.661613002013119,
+            0.00719783947506737,
+            0.8887406278678072
+          ],
+          "length": 1.8330360292081753
+        },
+        {
+          "time": 12,
+          "com": [
+            2.8897028315157307,
+            -0.019240648463399436,
+            0.8761442508361876
+          ],
+          "length": 1.7213070404143613
+        },
+        {
+          "time": 18,
+          "com": [
+            3.0937874738251514,
+            -0.03266346499953473,
+            0.8607132027196315
+          ],
+          "length": 1.6170340495139528
+        }
+      ]
+    },
+    {
+      "config": {
+        "frictionScale": 0.25,
+        "foldScale": 1,
+        "dt": 0.0025,
+        "actuation": true
+      },
+      "status": "completed",
+      "metrics": {
+        "forwardDisplacement": 3.0909593409519696,
+        "bodyLengthsPerCycle": 0.25757994507933085,
+        "meanForwardSpeed": 0.17171996338622053,
+        "lateralDisplacement": -0.010749138559143038,
+        "positiveCableWork": 24.439651500416495,
+        "minLength": 1.5398440355976506,
+        "maxLength": 2.7797978602539652,
+        "maxPenetration": 0.032447157422794276,
+        "maxBarStrain": 0.03187842188050338
+      },
+      "trajectory": [
+        {
+          "time": 0,
+          "com": [
+            2.3536084109833397,
+            -0.020796638110126286,
+            0.8380378386792007
+          ],
+          "length": 2.6448846135774193
+        },
+        {
+          "time": 6,
+          "com": [
+            3.1557001457506133,
+            -0.002727147700748868,
+            0.8706208737691365
+          ],
+          "length": 2.4144342620047574
+        },
+        {
+          "time": 12,
+          "com": [
+            4.235995866443912,
+            -0.016538230202121543,
+            0.8895813953670418
+          ],
+          "length": 2.3308974513835317
+        },
+        {
+          "time": 18,
+          "com": [
+            5.444518805591786,
+            -0.0412447162461389,
+            0.8945396365100277
+          ],
+          "length": 2.3006208754991913
+        }
+      ]
+    },
+    {
+      "config": {
+        "frictionScale": 1,
+        "foldScale": 1,
+        "dt": 0.0025,
+        "actuation": true
+      },
+      "status": "completed",
+      "metrics": {
+        "forwardDisplacement": 2.428783328617904,
+        "bodyLengthsPerCycle": 0.2023986107181587,
+        "meanForwardSpeed": 0.1349324071454391,
+        "lateralDisplacement": -0.02270992873553956,
+        "positiveCableWork": 25.623175147266835,
+        "minLength": 1.6004771242956572,
+        "maxLength": 3.0006868952387187,
+        "maxPenetration": 0.032397394338764984,
+        "maxBarStrain": 0.03601598635643677
+      },
+      "trajectory": [
+        {
+          "time": 0,
+          "com": [
+            2.471506966663626,
+            -0.005221692568807754,
+            0.8469638206405563
+          ],
+          "length": 2.8503395620530103
+        },
+        {
+          "time": 6,
+          "com": [
+            3.141822490564073,
+            -0.024161878686301597,
+            0.8472786339250546
+          ],
+          "length": 2.5853815100148476
+        },
+        {
+          "time": 12,
+          "com": [
+            3.997922752617988,
+            -0.02740888921768893,
+            0.8736658302059752
+          ],
+          "length": 2.3888862665668635
+        },
+        {
+          "time": 18,
+          "com": [
+            4.9003020793902605,
+            -0.0266342736988934,
+            0.886686154509626
+          ],
+          "length": 2.322822451612798
+        }
+      ]
+    },
+    {
+      "config": {
+        "frictionScale": 2,
+        "foldScale": 1,
+        "dt": 0.0025,
+        "actuation": true
+      },
+      "status": "completed",
+      "metrics": {
+        "forwardDisplacement": 1.2221714279491878,
+        "bodyLengthsPerCycle": 0.10184761899576567,
+        "meanForwardSpeed": 0.06789841266384376,
+        "lateralDisplacement": -0.03774806096973194,
+        "positiveCableWork": 26.46546594245588,
+        "minLength": 1.6883693139396625,
+        "maxLength": 3.04565037413225,
+        "maxPenetration": 0.0341875734338175,
+        "maxBarStrain": 0.0365261860319116
+      },
+      "trajectory": [
+        {
+          "time": 0,
+          "com": [
+            2.348600228919362,
+            0.011471003066160286,
+            0.8613830744224341
+          ],
+          "length": 2.9108803293534034
+        },
+        {
+          "time": 6,
+          "com": [
+            2.747815866687962,
+            -0.021602020592227156,
+            0.8203435828027011
+          ],
+          "length": 2.738926915891453
+        },
+        {
+          "time": 12,
+          "com": [
+            3.1178299594437013,
+            -0.031850119527359784,
+            0.8369408884258207
+          ],
+          "length": 2.496771960379711
+        },
+        {
+          "time": 18,
+          "com": [
+            3.5706428325593564,
+            -0.030239790394461362,
+            0.8531708816667617
+          ],
+          "length": 2.4038995242029277
+        }
+      ]
+    },
+    {
+      "config": {
+        "frictionScale": 0.25,
+        "foldScale": 2,
+        "dt": 0.0025,
+        "actuation": true
+      },
+      "status": "completed",
+      "metrics": {
+        "forwardDisplacement": 3.7207041800216265,
+        "bodyLengthsPerCycle": 0.3100586816684689,
+        "meanForwardSpeed": 0.20670578777897924,
+        "lateralDisplacement": -0.03155737246574031,
+        "positiveCableWork": 34.74504722227874,
+        "minLength": 2.5150545767866386,
+        "maxLength": 3.7836495353151585,
+        "maxPenetration": 0.032750177636838726,
+        "maxBarStrain": 0.03529717104225383
+      },
+      "trajectory": [
+        {
+          "time": 0,
+          "com": [
+            2.3931756700029667,
+            -0.007036464673381615,
+            0.8686517218708769
+          ],
+          "length": 3.6127381592600525
+        },
+        {
+          "time": 6,
+          "com": [
+            3.361284597304172,
+            -0.01351345406855713,
+            0.874002129000235
+          ],
+          "length": 3.6330616520620436
+        },
+        {
+          "time": 12,
+          "com": [
+            4.662635456180251,
+            -0.034148472677823824,
+            0.8839561471492398
+          ],
+          "length": 3.6182550576043107
+        },
+        {
+          "time": 18,
+          "com": [
+            6.113655941877881,
+            -0.05863113084060612,
+            0.8878652461821419
+          ],
+          "length": 3.6156262233103353
+        }
+      ]
+    },
+    {
+      "config": {
+        "frictionScale": 1,
+        "foldScale": 2,
+        "dt": 0.0025,
+        "actuation": true
+      },
+      "status": "completed",
+      "metrics": {
+        "forwardDisplacement": 3.63123571211615,
+        "bodyLengthsPerCycle": 0.30260297600967917,
+        "meanForwardSpeed": 0.2017353173397861,
+        "lateralDisplacement": 0.013359144212564657,
+        "positiveCableWork": 33.36778034224629,
+        "minLength": 2.548222033223861,
+        "maxLength": 3.723572767547621,
+        "maxPenetration": 0.03355120222245629,
+        "maxBarStrain": 0.03868345311292376
+      },
+      "trajectory": [
+        {
+          "time": 0,
+          "com": [
+            2.55162929921082,
+            -0.0036569588955432455,
+            0.8454872658370803
+          ],
+          "length": 3.626980086150448
+        },
+        {
+          "time": 6,
+          "com": [
+            3.6831047230967964,
+            -0.017894586895809195,
+            0.8840307434860735
+          ],
+          "length": 3.565674841838917
+        },
+        {
+          "time": 12,
+          "com": [
+            4.932809234376083,
+            -0.02261787081914579,
+            0.8884637664126179
+          ],
+          "length": 3.5774386913778065
+        },
+        {
+          "time": 18,
+          "com": [
+            6.1828479198304995,
+            -0.021052157850538558,
+            0.8871534659224917
+          ],
+          "length": 3.5815809467038338
+        }
+      ]
+    },
+    {
+      "config": {
+        "frictionScale": 2,
+        "foldScale": 2,
+        "dt": 0.0025,
+        "actuation": true
+      },
+      "status": "completed",
+      "metrics": {
+        "forwardDisplacement": 2.495381407820995,
+        "bodyLengthsPerCycle": 0.2079484506517496,
+        "meanForwardSpeed": 0.1386323004344997,
+        "lateralDisplacement": -0.004424714327149536,
+        "positiveCableWork": 31.879429381932326,
+        "minLength": 2.6303456091261914,
+        "maxLength": 3.7216907797732683,
+        "maxPenetration": 0.03370373963253085,
+        "maxBarStrain": 0.03845838085602049
+      },
+      "trajectory": [
+        {
+          "time": 0,
+          "com": [
+            2.394615676089799,
+            0.01172863018432889,
+            0.8485842386432542
+          ],
+          "length": 3.6595886312503976
+        },
+        {
+          "time": 6,
+          "com": [
+            3.158023731182172,
+            -0.005892852958133642,
+            0.8653727908323138
+          ],
+          "length": 3.565913725134297
+        },
+        {
+          "time": 12,
+          "com": [
+            4.025592747034792,
+            -0.010493001850785536,
+            0.8706603003594795
+          ],
+          "length": 3.575364626021702
+        },
+        {
+          "time": 18,
+          "com": [
+            4.889881808541709,
+            -0.012661466864589223,
+            0.8694138190990668
+          ],
+          "length": 3.581520926465829
+        }
+      ]
+    }
+  ],
+  "convergence": [
+    {
+      "config": {
+        "frictionScale": 0.25,
+        "foldScale": 0.5,
+        "dt": 0.005,
+        "actuation": true
+      },
+      "refinedStatus": "completed",
+      "absoluteDifference": 0.00009686321317262103
+    },
+    {
+      "config": {
+        "frictionScale": 1,
+        "foldScale": 0.5,
+        "dt": 0.005,
+        "actuation": true
+      },
+      "refinedStatus": "completed",
+      "absoluteDifference": 0.00045771331954076733
+    },
+    {
+      "config": {
+        "frictionScale": 2,
+        "foldScale": 0.5,
+        "dt": 0.005,
+        "actuation": true
+      },
+      "refinedStatus": "completed",
+      "absoluteDifference": 0.00023810386374645276
+    },
+    {
+      "config": {
+        "frictionScale": 0.25,
+        "foldScale": 1,
+        "dt": 0.005,
+        "actuation": true
+      },
+      "refinedStatus": "completed",
+      "absoluteDifference": 0.00034302580183276365
+    },
+    {
+      "config": {
+        "frictionScale": 1,
+        "foldScale": 1,
+        "dt": 0.005,
+        "actuation": true
+      },
+      "refinedStatus": "completed",
+      "absoluteDifference": 0.0006019375861459342
+    },
+    {
+      "config": {
+        "frictionScale": 2,
+        "foldScale": 1,
+        "dt": 0.005,
+        "actuation": true
+      },
+      "refinedStatus": "completed",
+      "absoluteDifference": 0.000629802292789583
+    },
+    {
+      "config": {
+        "frictionScale": 0.25,
+        "foldScale": 2,
+        "dt": 0.005,
+        "actuation": true
+      },
+      "refinedStatus": "completed",
+      "absoluteDifference": 0.00033053500574165007
+    },
+    {
+      "config": {
+        "frictionScale": 1,
+        "foldScale": 2,
+        "dt": 0.005,
+        "actuation": true
+      },
+      "refinedStatus": "completed",
+      "absoluteDifference": 0.0007082426403532405
+    },
+    {
+      "config": {
+        "frictionScale": 2,
+        "foldScale": 2,
+        "dt": 0.005,
+        "actuation": true
+      },
+      "refinedStatus": "completed",
+      "absoluteDifference": 0.0007079741617635193
+    }
+  ]
+}
