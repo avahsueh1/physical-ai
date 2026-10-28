@@ -38,6 +38,38 @@ No contact dynamics, friction, inertia, actuation, material deformation, sensor 
 
 Next: agree with the team on a mechanism and feasible shape changes, calibrate tradeoffs, then implement a dynamics model in an agreed simulator. MuJoCo and PyBullet are candidates; neither is installed or used here. Add realistic sensing and controller execution before making claims about learned navigation or sim-to-real transfer.
 
-## Repository handoff
+## Reproducible evaluation
+
+Run `npm run evaluate` to generate `evaluation-output/episodes.jsonl`,
+`summary.json`, and `report.md`. No additional dependencies are needed.
+The evaluation sweeps compact speed (1, 0.5) and shape-change cost (0, 1, 5)
+across the existing map families and opening widths. Unlike the original
+benchmark, it deduplicates identical geometry within each parameter condition.
+The current suite produces 1,464 robot runs and 183 equal-speed paired controls.
+Any equal-speed control violation makes the command fail.
+
+Each version-1 episode records the engine source hash, geometry, generator
+settings, controller, robot, parameters, trajectory, success, failure reason,
+and metrics with explicit units. A failed search retains null time/distance;
+unmeasured collisions and energy remain null. `no_route_on_discretization`
+means a failed geometric search, not a physical collision or actuator failure.
+Keep null values when importing this data into spreadsheets or other tools.
+
+The Markdown report includes failure counts and conditional mean travel times.
+The JSON summary also pairs fixed-compact and adaptive results on identical
+conditions, computing time saved only when both succeed. Do not compare
+conditional means as if they used identical successful scenarios.
+
+For simulator integration, first agree on a robot model, backend/version,
+observation/action interface, task, and termination rules. A future adapter
+should preserve the episode identity, provenance, units and outcome fields,
+but use its own backend/controller identifiers and physical failure reasons.
+Record measured physics metrics only when supported. No simulator adapter,
+friction/stiffness model, or VLA integration is implemented in this change.
+
+See `baseline-report.md` for a generated snapshot; rerun evaluation after
+changing the engine. Generated per-episode data stays local and is gitignored.
+
+## Branch
 
 This folder is self-contained and can be copied into another checkout. The experiment lives on `codex/navigation-lab`; `main` is intentionally empty. `engine.js` is shared by browser and benchmark; `test.mjs` checks collision safety, reproducibility, analytical travel time, blocked passages, and the compact baseline control. Generated benchmark results are ignored and can be reproduced with the command above.

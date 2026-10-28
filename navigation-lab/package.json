@@ -1,1 +1,1 @@
-{"name":"morphology-navigation-lab","private":true,"type":"module","scripts":{"start":"node server.mjs","test":"node --test test.mjs","benchmark":"node benchmark.mjs"}}
+{"name":"morphology-navigation-lab","private":true,"type":"module","scripts":{"start":"node server.mjs","test":"node --test test.mjs evaluation.test.mjs","benchmark":"node benchmark.mjs","evaluate":"node evaluate.mjs"}}
