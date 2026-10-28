@@ -1,0 +1,731 @@
+{
+  "source": "summary.json",
+  "sourceSha256": "00e1fd5b5bbd6a0e6edda54fa72aa3d5d89f8a9489cc0ed2392947905ad9ce7e",
+  "matplotlibVersion": "3.10.9",
+  "rows": [
+    {
+      "kind": "open",
+      "compactSpeed": 1,
+      "switchCost": 0,
+      "robot": "Fixed compact",
+      "scenarios": 1,
+      "successes": 1,
+      "failures": 0,
+      "meanTimeSuccessful": 17
+    },
+    {
+      "kind": "open",
+      "compactSpeed": 1,
+      "switchCost": 0,
+      "robot": "Fixed medium",
+      "scenarios": 1,
+      "successes": 1,
+      "failures": 0,
+      "meanTimeSuccessful": 17
+    },
+    {
+      "kind": "open",
+      "compactSpeed": 1,
+      "switchCost": 0,
+      "robot": "Fixed wide",
+      "scenarios": 1,
+      "successes": 1,
+      "failures": 0,
+      "meanTimeSuccessful": 17
+    },
+    {
+      "kind": "open",
+      "compactSpeed": 1,
+      "switchCost": 0,
+      "robot": "Reconfigurable",
+      "scenarios": 1,
+      "successes": 1,
+      "failures": 0,
+      "meanTimeSuccessful": 17
+    },
+    {
+      "kind": "passages",
+      "compactSpeed": 1,
+      "switchCost": 0,
+      "robot": "Fixed compact",
+      "scenarios": 30,
+      "successes": 30,
+      "failures": 0,
+      "meanTimeSuccessful": 22.216666666666665
+    },
+    {
+      "kind": "passages",
+      "compactSpeed": 1,
+      "switchCost": 0,
+      "robot": "Fixed medium",
+      "scenarios": 30,
+      "successes": 30,
+      "failures": 0,
+      "meanTimeSuccessful": 23.083333333333332
+    },
+    {
+      "kind": "passages",
+      "compactSpeed": 1,
+      "switchCost": 0,
+      "robot": "Fixed wide",
+      "scenarios": 30,
+      "successes": 30,
+      "failures": 0,
+      "meanTimeSuccessful": 24.466666666666665
+    },
+    {
+      "kind": "passages",
+      "compactSpeed": 1,
+      "switchCost": 0,
+      "robot": "Reconfigurable",
+      "scenarios": 30,
+      "successes": 30,
+      "failures": 0,
+      "meanTimeSuccessful": 22.216666666666665
+    },
+    {
+      "kind": "sealed",
+      "compactSpeed": 1,
+      "switchCost": 0,
+      "robot": "Fixed compact",
+      "scenarios": 30,
+      "successes": 30,
+      "failures": 0,
+      "meanTimeSuccessful": 22.216666666666665
+    },
+    {
+      "kind": "sealed",
+      "compactSpeed": 1,
+      "switchCost": 0,
+      "robot": "Fixed medium",
+      "scenarios": 30,
+      "successes": 20,
+      "failures": 10,
+      "meanTimeSuccessful": 22.125
+    },
+    {
+      "kind": "sealed",
+      "compactSpeed": 1,
+      "switchCost": 0,
+      "robot": "Fixed wide",
+      "scenarios": 30,
+      "successes": 10,
+      "failures": 20,
+      "meanTimeSuccessful": 22.4
+    },
+    {
+      "kind": "sealed",
+      "compactSpeed": 1,
+      "switchCost": 0,
+      "robot": "Reconfigurable",
+      "scenarios": 30,
+      "successes": 30,
+      "failures": 0,
+      "meanTimeSuccessful": 22.216666666666665
+    },
+    {
+      "kind": "open",
+      "compactSpeed": 1,
+      "switchCost": 1,
+      "robot": "Fixed compact",
+      "scenarios": 1,
+      "successes": 1,
+      "failures": 0,
+      "meanTimeSuccessful": 17
+    },
+    {
+      "kind": "open",
+      "compactSpeed": 1,
+      "switchCost": 1,
+      "robot": "Fixed medium",
+      "scenarios": 1,
+      "successes": 1,
+      "failures": 0,
+      "meanTimeSuccessful": 17
+    },
+    {
+      "kind": "open",
+      "compactSpeed": 1,
+      "switchCost": 1,
+      "robot": "Fixed wide",
+      "scenarios": 1,
+      "successes": 1,
+      "failures": 0,
+      "meanTimeSuccessful": 17
+    },
+    {
+      "kind": "open",
+      "compactSpeed": 1,
+      "switchCost": 1,
+      "robot": "Reconfigurable",
+      "scenarios": 1,
+      "successes": 1,
+      "failures": 0,
+      "meanTimeSuccessful": 17
+    },
+    {
+      "kind": "passages",
+      "compactSpeed": 1,
+      "switchCost": 1,
+      "robot": "Fixed compact",
+      "scenarios": 30,
+      "successes": 30,
+      "failures": 0,
+      "meanTimeSuccessful": 22.216666666666665
+    },
+    {
+      "kind": "passages",
+      "compactSpeed": 1,
+      "switchCost": 1,
+      "robot": "Fixed medium",
+      "scenarios": 30,
+      "successes": 30,
+      "failures": 0,
+      "meanTimeSuccessful": 23.083333333333332
+    },
+    {
+      "kind": "passages",
+      "compactSpeed": 1,
+      "switchCost": 1,
+      "robot": "Fixed wide",
+      "scenarios": 30,
+      "successes": 30,
+      "failures": 0,
+      "meanTimeSuccessful": 24.466666666666665
+    },
+    {
+      "kind": "passages",
+      "compactSpeed": 1,
+      "switchCost": 1,
+      "robot": "Reconfigurable",
+      "scenarios": 30,
+      "successes": 30,
+      "failures": 0,
+      "meanTimeSuccessful": 22.216666666666665
+    },
+    {
+      "kind": "sealed",
+      "compactSpeed": 1,
+      "switchCost": 1,
+      "robot": "Fixed compact",
+      "scenarios": 30,
+      "successes": 30,
+      "failures": 0,
+      "meanTimeSuccessful": 22.216666666666665
+    },
+    {
+      "kind": "sealed",
+      "compactSpeed": 1,
+      "switchCost": 1,
+      "robot": "Fixed medium",
+      "scenarios": 30,
+      "successes": 20,
+      "failures": 10,
+      "meanTimeSuccessful": 22.125
+    },
+    {
+      "kind": "sealed",
+      "compactSpeed": 1,
+      "switchCost": 1,
+      "robot": "Fixed wide",
+      "scenarios": 30,
+      "successes": 10,
+      "failures": 20,
+      "meanTimeSuccessful": 22.4
+    },
+    {
+      "kind": "sealed",
+      "compactSpeed": 1,
+      "switchCost": 1,
+      "robot": "Reconfigurable",
+      "scenarios": 30,
+      "successes": 30,
+      "failures": 0,
+      "meanTimeSuccessful": 22.216666666666665
+    },
+    {
+      "kind": "open",
+      "compactSpeed": 1,
+      "switchCost": 5,
+      "robot": "Fixed compact",
+      "scenarios": 1,
+      "successes": 1,
+      "failures": 0,
+      "meanTimeSuccessful": 17
+    },
+    {
+      "kind": "open",
+      "compactSpeed": 1,
+      "switchCost": 5,
+      "robot": "Fixed medium",
+      "scenarios": 1,
+      "successes": 1,
+      "failures": 0,
+      "meanTimeSuccessful": 17
+    },
+    {
+      "kind": "open",
+      "compactSpeed": 1,
+      "switchCost": 5,
+      "robot": "Fixed wide",
+      "scenarios": 1,
+      "successes": 1,
+      "failures": 0,
+      "meanTimeSuccessful": 17
+    },
+    {
+      "kind": "open",
+      "compactSpeed": 1,
+      "switchCost": 5,
+      "robot": "Reconfigurable",
+      "scenarios": 1,
+      "successes": 1,
+      "failures": 0,
+      "meanTimeSuccessful": 17
+    },
+    {
+      "kind": "passages",
+      "compactSpeed": 1,
+      "switchCost": 5,
+      "robot": "Fixed compact",
+      "scenarios": 30,
+      "successes": 30,
+      "failures": 0,
+      "meanTimeSuccessful": 22.216666666666665
+    },
+    {
+      "kind": "passages",
+      "compactSpeed": 1,
+      "switchCost": 5,
+      "robot": "Fixed medium",
+      "scenarios": 30,
+      "successes": 30,
+      "failures": 0,
+      "meanTimeSuccessful": 23.083333333333332
+    },
+    {
+      "kind": "passages",
+      "compactSpeed": 1,
+      "switchCost": 5,
+      "robot": "Fixed wide",
+      "scenarios": 30,
+      "successes": 30,
+      "failures": 0,
+      "meanTimeSuccessful": 24.466666666666665
+    },
+    {
+      "kind": "passages",
+      "compactSpeed": 1,
+      "switchCost": 5,
+      "robot": "Reconfigurable",
+      "scenarios": 30,
+      "successes": 30,
+      "failures": 0,
+      "meanTimeSuccessful": 22.216666666666665
+    },
+    {
+      "kind": "sealed",
+      "compactSpeed": 1,
+      "switchCost": 5,
+      "robot": "Fixed compact",
+      "scenarios": 30,
+      "successes": 30,
+      "failures": 0,
+      "meanTimeSuccessful": 22.216666666666665
+    },
+    {
+      "kind": "sealed",
+      "compactSpeed": 1,
+      "switchCost": 5,
+      "robot": "Fixed medium",
+      "scenarios": 30,
+      "successes": 20,
+      "failures": 10,
+      "meanTimeSuccessful": 22.125
+    },
+    {
+      "kind": "sealed",
+      "compactSpeed": 1,
+      "switchCost": 5,
+      "robot": "Fixed wide",
+      "scenarios": 30,
+      "successes": 10,
+      "failures": 20,
+      "meanTimeSuccessful": 22.4
+    },
+    {
+      "kind": "sealed",
+      "compactSpeed": 1,
+      "switchCost": 5,
+      "robot": "Reconfigurable",
+      "scenarios": 30,
+      "successes": 30,
+      "failures": 0,
+      "meanTimeSuccessful": 22.216666666666665
+    },
+    {
+      "kind": "open",
+      "compactSpeed": 0.5,
+      "switchCost": 0,
+      "robot": "Fixed compact",
+      "scenarios": 1,
+      "successes": 1,
+      "failures": 0,
+      "meanTimeSuccessful": 34
+    },
+    {
+      "kind": "open",
+      "compactSpeed": 0.5,
+      "switchCost": 0,
+      "robot": "Fixed medium",
+      "scenarios": 1,
+      "successes": 1,
+      "failures": 0,
+      "meanTimeSuccessful": 17
+    },
+    {
+      "kind": "open",
+      "compactSpeed": 0.5,
+      "switchCost": 0,
+      "robot": "Fixed wide",
+      "scenarios": 1,
+      "successes": 1,
+      "failures": 0,
+      "meanTimeSuccessful": 17
+    },
+    {
+      "kind": "open",
+      "compactSpeed": 0.5,
+      "switchCost": 0,
+      "robot": "Reconfigurable",
+      "scenarios": 1,
+      "successes": 1,
+      "failures": 0,
+      "meanTimeSuccessful": 17
+    },
+    {
+      "kind": "passages",
+      "compactSpeed": 0.5,
+      "switchCost": 0,
+      "robot": "Fixed compact",
+      "scenarios": 30,
+      "successes": 30,
+      "failures": 0,
+      "meanTimeSuccessful": 44.43333333333333
+    },
+    {
+      "kind": "passages",
+      "compactSpeed": 0.5,
+      "switchCost": 0,
+      "robot": "Fixed medium",
+      "scenarios": 30,
+      "successes": 30,
+      "failures": 0,
+      "meanTimeSuccessful": 23.083333333333332
+    },
+    {
+      "kind": "passages",
+      "compactSpeed": 0.5,
+      "switchCost": 0,
+      "robot": "Fixed wide",
+      "scenarios": 30,
+      "successes": 30,
+      "failures": 0,
+      "meanTimeSuccessful": 24.466666666666665
+    },
+    {
+      "kind": "passages",
+      "compactSpeed": 0.5,
+      "switchCost": 0,
+      "robot": "Reconfigurable",
+      "scenarios": 30,
+      "successes": 30,
+      "failures": 0,
+      "meanTimeSuccessful": 22.85
+    },
+    {
+      "kind": "sealed",
+      "compactSpeed": 0.5,
+      "switchCost": 0,
+      "robot": "Fixed compact",
+      "scenarios": 30,
+      "successes": 30,
+      "failures": 0,
+      "meanTimeSuccessful": 44.43333333333333
+    },
+    {
+      "kind": "sealed",
+      "compactSpeed": 0.5,
+      "switchCost": 0,
+      "robot": "Fixed medium",
+      "scenarios": 30,
+      "successes": 20,
+      "failures": 10,
+      "meanTimeSuccessful": 22.125
+    },
+    {
+      "kind": "sealed",
+      "compactSpeed": 0.5,
+      "switchCost": 0,
+      "robot": "Fixed wide",
+      "scenarios": 30,
+      "successes": 10,
+      "failures": 20,
+      "meanTimeSuccessful": 22.4
+    },
+    {
+      "kind": "sealed",
+      "compactSpeed": 0.5,
+      "switchCost": 0,
+      "robot": "Reconfigurable",
+      "scenarios": 30,
+      "successes": 30,
+      "failures": 0,
+      "meanTimeSuccessful": 22.883333333333333
+    },
+    {
+      "kind": "open",
+      "compactSpeed": 0.5,
+      "switchCost": 1,
+      "robot": "Fixed compact",
+      "scenarios": 1,
+      "successes": 1,
+      "failures": 0,
+      "meanTimeSuccessful": 34
+    },
+    {
+      "kind": "open",
+      "compactSpeed": 0.5,
+      "switchCost": 1,
+      "robot": "Fixed medium",
+      "scenarios": 1,
+      "successes": 1,
+      "failures": 0,
+      "meanTimeSuccessful": 17
+    },
+    {
+      "kind": "open",
+      "compactSpeed": 0.5,
+      "switchCost": 1,
+      "robot": "Fixed wide",
+      "scenarios": 1,
+      "successes": 1,
+      "failures": 0,
+      "meanTimeSuccessful": 17
+    },
+    {
+      "kind": "open",
+      "compactSpeed": 0.5,
+      "switchCost": 1,
+      "robot": "Reconfigurable",
+      "scenarios": 1,
+      "successes": 1,
+      "failures": 0,
+      "meanTimeSuccessful": 17
+    },
+    {
+      "kind": "passages",
+      "compactSpeed": 0.5,
+      "switchCost": 1,
+      "robot": "Fixed compact",
+      "scenarios": 30,
+      "successes": 30,
+      "failures": 0,
+      "meanTimeSuccessful": 44.43333333333333
+    },
+    {
+      "kind": "passages",
+      "compactSpeed": 0.5,
+      "switchCost": 1,
+      "robot": "Fixed medium",
+      "scenarios": 30,
+      "successes": 30,
+      "failures": 0,
+      "meanTimeSuccessful": 23.083333333333332
+    },
+    {
+      "kind": "passages",
+      "compactSpeed": 0.5,
+      "switchCost": 1,
+      "robot": "Fixed wide",
+      "scenarios": 30,
+      "successes": 30,
+      "failures": 0,
+      "meanTimeSuccessful": 24.466666666666665
+    },
+    {
+      "kind": "passages",
+      "compactSpeed": 0.5,
+      "switchCost": 1,
+      "robot": "Reconfigurable",
+      "scenarios": 30,
+      "successes": 30,
+      "failures": 0,
+      "meanTimeSuccessful": 23.083333333333332
+    },
+    {
+      "kind": "sealed",
+      "compactSpeed": 0.5,
+      "switchCost": 1,
+      "robot": "Fixed compact",
+      "scenarios": 30,
+      "successes": 30,
+      "failures": 0,
+      "meanTimeSuccessful": 44.43333333333333
+    },
+    {
+      "kind": "sealed",
+      "compactSpeed": 0.5,
+      "switchCost": 1,
+      "robot": "Fixed medium",
+      "scenarios": 30,
+      "successes": 20,
+      "failures": 10,
+      "meanTimeSuccessful": 22.125
+    },
+    {
+      "kind": "sealed",
+      "compactSpeed": 0.5,
+      "switchCost": 1,
+      "robot": "Fixed wide",
+      "scenarios": 30,
+      "successes": 10,
+      "failures": 20,
+      "meanTimeSuccessful": 22.4
+    },
+    {
+      "kind": "sealed",
+      "compactSpeed": 0.5,
+      "switchCost": 1,
+      "robot": "Reconfigurable",
+      "scenarios": 30,
+      "successes": 30,
+      "failures": 0,
+      "meanTimeSuccessful": 24.216666666666665
+    },
+    {
+      "kind": "open",
+      "compactSpeed": 0.5,
+      "switchCost": 5,
+      "robot": "Fixed compact",
+      "scenarios": 1,
+      "successes": 1,
+      "failures": 0,
+      "meanTimeSuccessful": 34
+    },
+    {
+      "kind": "open",
+      "compactSpeed": 0.5,
+      "switchCost": 5,
+      "robot": "Fixed medium",
+      "scenarios": 1,
+      "successes": 1,
+      "failures": 0,
+      "meanTimeSuccessful": 17
+    },
+    {
+      "kind": "open",
+      "compactSpeed": 0.5,
+      "switchCost": 5,
+      "robot": "Fixed wide",
+      "scenarios": 1,
+      "successes": 1,
+      "failures": 0,
+      "meanTimeSuccessful": 17
+    },
+    {
+      "kind": "open",
+      "compactSpeed": 0.5,
+      "switchCost": 5,
+      "robot": "Reconfigurable",
+      "scenarios": 1,
+      "successes": 1,
+      "failures": 0,
+      "meanTimeSuccessful": 17
+    },
+    {
+      "kind": "passages",
+      "compactSpeed": 0.5,
+      "switchCost": 5,
+      "robot": "Fixed compact",
+      "scenarios": 30,
+      "successes": 30,
+      "failures": 0,
+      "meanTimeSuccessful": 44.43333333333333
+    },
+    {
+      "kind": "passages",
+      "compactSpeed": 0.5,
+      "switchCost": 5,
+      "robot": "Fixed medium",
+      "scenarios": 30,
+      "successes": 30,
+      "failures": 0,
+      "meanTimeSuccessful": 23.083333333333332
+    },
+    {
+      "kind": "passages",
+      "compactSpeed": 0.5,
+      "switchCost": 5,
+      "robot": "Fixed wide",
+      "scenarios": 30,
+      "successes": 30,
+      "failures": 0,
+      "meanTimeSuccessful": 24.466666666666665
+    },
+    {
+      "kind": "passages",
+      "compactSpeed": 0.5,
+      "switchCost": 5,
+      "robot": "Reconfigurable",
+      "scenarios": 30,
+      "successes": 30,
+      "failures": 0,
+      "meanTimeSuccessful": 23.083333333333332
+    },
+    {
+      "kind": "sealed",
+      "compactSpeed": 0.5,
+      "switchCost": 5,
+      "robot": "Fixed compact",
+      "scenarios": 30,
+      "successes": 30,
+      "failures": 0,
+      "meanTimeSuccessful": 44.43333333333333
+    },
+    {
+      "kind": "sealed",
+      "compactSpeed": 0.5,
+      "switchCost": 5,
+      "robot": "Fixed medium",
+      "scenarios": 30,
+      "successes": 20,
+      "failures": 10,
+      "meanTimeSuccessful": 22.125
+    },
+    {
+      "kind": "sealed",
+      "compactSpeed": 0.5,
+      "switchCost": 5,
+      "robot": "Fixed wide",
+      "scenarios": 30,
+      "successes": 10,
+      "failures": 20,
+      "meanTimeSuccessful": 22.4
+    },
+    {
+      "kind": "sealed",
+      "compactSpeed": 0.5,
+      "switchCost": 5,
+      "robot": "Reconfigurable",
+      "scenarios": 30,
+      "successes": 30,
+      "failures": 0,
+      "meanTimeSuccessful": 28.391666666666666
+    }
+  ],
+  "negativeControl": {
+    "cases": 183,
+    "violations": 0
+  }
+}

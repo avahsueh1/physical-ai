@@ -40,6 +40,27 @@ Next: agree with the team on a mechanism and feasible shape changes, calibrate t
 
 ## Reproducible evaluation
 
+### Result plots
+
+![Geometric baseline results](plots/baseline-results.png)
+
+The three panels show completion rates, the assumed compact-speed tradeoff,
+and sensitivity to shape-change time on maps with no detour. Travel-time
+comparisons use the same 30 successful maps for both robots. These are
+deterministic geometric results, not physical robot measurements.
+
+Reproduce from this directory with `npm run evaluate`, then
+`python plot_results.py`. The Python script requires Matplotlib
+(`python -m pip install matplotlib==3.10.9` for standard Python; for MSYS2 UCRT
+Python use `pacman -S mingw-w64-ucrt-x86_64-python-matplotlib`).
+Exports are [PNG](plots/baseline-results.png), [SVG](plots/baseline-results.svg),
+and [PDF](plots/baseline-results.pdf). The committed `plots/plot-data.json`
+contains source summary rows, its SHA-256 and plotting-library version.
+To redraw that snapshot without rerunning the benchmark, use
+`python plot_results.py --input plots/plot-data.json --output evaluation-output/redrawn`.
+
+### Run data
+
 Run `npm run evaluate` to generate `evaluation-output/episodes.jsonl`,
 `summary.json`, and `report.md`. No additional dependencies are needed.
 The evaluation sweeps compact speed (1, 0.5) and shape-change cost (0, 1, 5)
